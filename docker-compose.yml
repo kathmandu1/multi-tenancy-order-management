@@ -59,26 +59,26 @@ services:
 #     networks:
 #         - hazesoft
 
-#   phpmyadmin:
-#     image: phpmyadmin/phpmyadmin
-#     restart: always
-#     ports:
-#       - "9080:80"
-#     networks:
-#       - hazesoft
-#     environment:
-#       PMA_HOST: 'db'
-#       PMA_PORT: '3306'
-#       PMA_USER: 'root'
-#       PMA_PASSWORD: '@dmin@123'
-#       UPLOAD_LIMIT: 3048M  # Set the limit to  2 gb
-#       PMA_UPLOAD_MAX_SIZE: 3048M
-#       PMA_POST_MAX_SIZE: 3048M
-#       NGINX_CLIENT_MAX_BODY_SIZE: 3048
-#     depends_on:
-#       - db
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    networks:
+      - hazesoft
+    environment:
+      PMA_HOST: 'db'
+      PMA_PORT: '3306'
+      PMA_USER: 'root'
+      PMA_PASSWORD: '@dmin@123'
+      UPLOAD_LIMIT: 3048M  # Set the limit to  2 gb
+      PMA_UPLOAD_MAX_SIZE: 3048M
+      PMA_POST_MAX_SIZE: 3048M
+      NGINX_CLIENT_MAX_BODY_SIZE: 3048
+    depends_on:
+      - db
     # volumes:
-      # - ./data:/var/www/html
+    #   - ./data:/var/www/html
 
   queue:
     build:
