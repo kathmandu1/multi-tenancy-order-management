@@ -15,7 +15,7 @@ services:
       - "${APP_PORT}:80"
     restart: unless-stopped
     networks:
-      - hcrs
+      - hazesoft
 
   app:
     build:
@@ -33,7 +33,7 @@ services:
     environment:
       CONTAINER_ID: $(docker-compose ps -q app)
     networks:
-      - hcrs
+      - hazesoft
 
   db:
     image: mysql:8.0
@@ -44,12 +44,12 @@ services:
       - .docker/mysql/init/init.sql:/usr/local/etc/mysql/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: '@dmin@123'
-      MYSQL_DATABASE: example
+      MYSQL_DATABASE: hazesoft
     restart: unless-stopped
     ports:
       - "8003:3306"
     networks:
-      - hcrs
+      - hazesoft
 #   mail:
 #     image: maildev/maildev
 #     ports:
@@ -57,7 +57,7 @@ services:
 #         - "9002:1080"
 #     restart: unless-stopped
 #     networks:
-#         - hcrs
+#         - hazesoft
 
 #   phpmyadmin:
 #     image: phpmyadmin/phpmyadmin
@@ -65,7 +65,7 @@ services:
 #     ports:
 #       - "9080:80"
 #     networks:
-#       - hcrs
+#       - hazesoft
 #     environment:
 #       PMA_HOST: 'db'
 #       PMA_PORT: '3306'
@@ -100,7 +100,7 @@ services:
       # QUEUE_DRIVER: redis
       # REDIS_HOST: redis
     networks:
-      - hcrs
+      - hazesoft
 
 #   cron:
 #     build:
@@ -110,7 +110,7 @@ services:
 #     volumes:
 #       - .:/var/www/html
 #     networks:
-#       - hcrs
+#       - hazesoft
 
 #   filebeat:
 #     # image: docker.elastic.co/beats/filebeat:latest
@@ -123,12 +123,12 @@ services:
 #     depends_on:
 #       - web
 #     networks:
-#       - hcrs
+#       - hazesoft
 
 
 
 networks:
-  hcrs:
+  hazesoft:
     driver: bridge
 
 volumes:
