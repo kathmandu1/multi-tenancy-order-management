@@ -1,0 +1,59 @@
+# grumphp.yml
+grumphp:
+    hooks_dir: ~
+    hooks_preset: local
+    git_hook_variables:
+        VAGRANT_HOST_DIR: .
+        VAGRANT_PROJECT_DIR: /var/www
+        EXEC_GRUMPHP_COMMAND: exec
+        ENV: {}
+    stop_on_failure: false
+    ignore_unstaged_changes: false
+    hide_circumvention_tip: false
+    process_timeout: 60
+    ascii:
+        failed: grumphp-grumpy.txt
+        succeeded: grumphp-happy.txt
+    parallel:
+        enabled: true
+        max_workers: 32
+    fixer:
+        enabled: true
+        fix_by_default: false
+    environment:
+        files: []
+        variables: {}
+        paths: []
+    tasks:
+      # phpstan:
+      #   task: phpstan
+      #   options:
+      #       --level: 5
+      #       --configuration: phpstan.neon
+      git_branch_name:
+        # whitelist:
+        #   - '/([0-9]+)-/'
+        #   - '/bugfix-*/'
+        blacklist:
+          - "/(shit|fuck|crap)/"
+      git_blacklist:
+          keywords:
+              - "die("
+              - "var_dump("
+              # - "exit;"
+              - "dump("
+#              - "dd("
+#              - "ddd("
+      git_commit_message:
+          matchers:
+              - /(fixes|changes|bug|feature|refs)(\s(#\d+)(\s(@[0-9hm]+)*))+/i
+          case_insensitive: true
+          allow_empty_message: false
+          enforce_capitalized_subject: false
+          enforce_no_subject_trailing_period: true
+          enforce_single_lined_subject: false
+          max_body_width: 400
+          max_subject_width: 200
+          multiline: true
+    testsuites: []
+    extensions: []

@@ -1,0 +1,38 @@
+
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/lib/docker/containers/web/**/*.log
+      - /var/log/nginx/*.log  # Adjust this path if necessary to get nginx log
+      - /log/nginx/*.log  # Adjust this path if necessary to get nginx log
+    exclude_files: []
+    enabled: true
+    scan_frequency: 1m
+    multiline.pattern: '^$'
+    multiline.negate: true
+    multiline.match: after
+
+processors:
+  - decode_json_fields:
+      fields: ["message"]  # The field that contains JSON to decode
+      target: ""  # Optional, target field for the decoded data
+      overwrite_keys: true  # Optional, overwrite existing keys if present
+  - add_host_metadata: ~  # Adds host-related metadata to each event
+  - add_docker_metadata: ~  # Adds Docker-related metadata to events, if applicable
+
+output.elasticsearch:
+  # Ensure this section points to the correct Elasticsearch address and port
+  hosts: ["http://host.docker.internal:9200"]  # Replace with your actual Elasticsearch host and port
+  username: "elastic"  # Optional: Elasticsearch username if security is enabled
+  password: "@dmin@123"  # Optional: Elasticsearch password if security is enabled
+  protocol: "http"  # Use https if your Elasticsearch is set up with SSL/TLS
+  ssl.verification_mode: "none"  # Optional: to disable SSL verification (useful for local development environments)
+  index: "nginx-logs-%{+yyyy.MM.dd}"
+
+setup.template.name: "nginx-logs"  # Set the template name for the index
+setup.template.pattern: "nginx-logs-*"  # Set the pattern for the index to match
+
+logging.level: debug
+
+logging.selectors: ["*"]
+
