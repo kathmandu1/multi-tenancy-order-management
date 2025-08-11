@@ -35,8 +35,8 @@ namespace App\Http\Controllers;
  * )
  *
  * @OA\Tag(
- *     name="Main Application - Tenants",
- *     description="Endpoints related to tenants inside the main application"
+ *     name="Tenants",
+ *     description="Endpoints related to tenants inside the main application regarding Order,Product and shipping"
  * )
  */
 abstract class Controller

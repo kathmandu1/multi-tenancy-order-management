@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Modules\OrderManagement\Enums\OrderTrackingEnums;
+use Modules\OrderManagement\Enums\OrderTrackingEnum;
 
 return new class extends Migration
 {
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('order_action_by')->comment('who trigger on order process');
             $table->dateTime('date');
-            $table->enum('order_status', array_column(OrderTrackingEnums::cases(), 'value'))->nullable();
+            $table->enum('order_status', array_column(OrderTrackingEnum::cases(), 'value'))->nullable();
             $table->string('remarks')->nullable();
 
 

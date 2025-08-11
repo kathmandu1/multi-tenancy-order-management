@@ -4,6 +4,12 @@ namespace Modules\OrderManagement\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Accomodation\Repositories\Order\ProductRepository;
+use Modules\OrderManagement\Contracts\Customerable;
+use Modules\OrderManagement\Contracts\Order\Orderable;
+use Modules\OrderManagement\Contracts\Order\Productable;
+use Modules\OrderManagement\Repositories\CustomerRepository;
+use Modules\OrderManagement\Repositories\Order\OrderRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +33,7 @@ class OrderManagementServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->bindings();
     }
 
     /**
@@ -62,7 +69,7 @@ class OrderManagementServiceProvider extends ServiceProvider
      */
     public function registerTranslations(): void
     {
-        $langPath = resource_path('lang/modules/'.$this->nameLower);
+        $langPath = resource_path('lang/modules/' . $this->nameLower);
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $this->nameLower);
@@ -85,9 +92,9 @@ class OrderManagementServiceProvider extends ServiceProvider
 
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {
-                    $config = str_replace($configPath.DIRECTORY_SEPARATOR, '', $file->getPathname());
+                    $config = str_replace($configPath . DIRECTORY_SEPARATOR, '', $file->getPathname());
                     $config_key = str_replace([DIRECTORY_SEPARATOR, '.php'], ['.', ''], $config);
-                    $segments = explode('.', $this->nameLower.'.'.$config_key);
+                    $segments = explode('.', $this->nameLower . '.' . $config_key);
 
                     // Remove duplicated adjacent segments
                     $normalized = [];
@@ -122,14 +129,14 @@ class OrderManagementServiceProvider extends ServiceProvider
      */
     public function registerViews(): void
     {
-        $viewPath = resource_path('views/modules/'.$this->nameLower);
+        $viewPath = resource_path('views/modules/' . $this->nameLower);
         $sourcePath = module_path($this->name, 'resources/views');
 
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
+        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
 
-        Blade::componentNamespace(config('modules.namespace').'\\' . $this->name . '\\View\\Components', $this->nameLower);
+        Blade::componentNamespace(config('modules.namespace') . '\\' . $this->name . '\\View\\Components', $this->nameLower);
     }
 
     /**
@@ -144,11 +151,18 @@ class OrderManagementServiceProvider extends ServiceProvider
     {
         $paths = [];
         foreach (config('view.paths') as $path) {
-            if (is_dir($path.'/modules/'.$this->nameLower)) {
-                $paths[] = $path.'/modules/'.$this->nameLower;
+            if (is_dir($path . '/modules/' . $this->nameLower)) {
+                $paths[] = $path . '/modules/' . $this->nameLower;
             }
         }
 
         return $paths;
+    }
+
+    private function bindings()
+    {
+        $this->app->bind(Customerable::class, CustomerRepository::class);
+        $this->app->bind(Productable::class, ProductRepository::class);
+        $this->app->bind(Orderable::class, OrderRepository::class);
     }
 }

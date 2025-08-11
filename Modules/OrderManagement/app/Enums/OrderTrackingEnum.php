@@ -2,7 +2,7 @@
 
 namespace Modules\OrderManagement\Enums;
 
-enum OrderTrackingEnums: string
+enum OrderTrackingEnum: string
 {
 
     case PENDING = 'pending';

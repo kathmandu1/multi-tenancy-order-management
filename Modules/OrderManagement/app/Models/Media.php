@@ -4,19 +4,19 @@ namespace Modules\OrderManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\OrderManagement\Database\Factories\ProductFactory;
+// use Modules\OrderManagement\Database\Factories\MediaFactory;
 
-class Product extends Model
+class Media extends Model
 {
     use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $guarded = [];
+    protected $fillable = [];
 
-    // protected static function newFactory(): ProductFactory
+    // protected static function newFactory(): MediaFactory
     // {
-    //     // return ProductFactory::new();
+    //     // return MediaFactory::new();
     // }
 }
