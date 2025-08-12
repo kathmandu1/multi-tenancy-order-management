@@ -11,6 +11,11 @@ class OrderManagementDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            CustomerTableSeeder::class,
+            ProductTableSeeder::class,
+            OrderTableSeeder::class,
+            CustomerShippingAddressTableSeeder::class,
+        ]);
     }
 }

@@ -18,6 +18,9 @@ final class OrderDataBuilder
             actual_amount: $request->actual_amount,
             status: $request->status,
             remark: $request->remark,
+            order_date: $request->order_date,
+            delivery_date: $request->delivery_date,
+            shipping_address_id: $request->shipping_address_id,
             order_items: $request->order_items,
         );
     }

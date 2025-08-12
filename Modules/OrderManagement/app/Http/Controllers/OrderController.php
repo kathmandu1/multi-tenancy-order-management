@@ -109,6 +109,17 @@ class OrderController extends Controller
      *                 type="string",
      *                 example="Sample remark"
      *             ),
+     *              @OA\Property(
+     *                  property="delivery_date",
+     *                  type="string",
+     *                  format="date",
+     *                  example="2025-08-12"
+     *              ),
+     *              @OA\Property(
+     *                  property="shipping_address_id",
+     *                  type="integer",
+     *                  example=1
+     *              ),
      *             @OA\Property(
      *                 property="order_items",
      *                 type="array",

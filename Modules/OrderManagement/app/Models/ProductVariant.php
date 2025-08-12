@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-// use Modules\OrderManagement\Database\Factories\ProductVariantFactory;
+use Modules\OrderManagement\Database\Factories\ProductVariantFactory;
 
 class ProductVariant extends Model
 {
@@ -17,10 +17,10 @@ class ProductVariant extends Model
      */
     protected $guarded = [];
 
-    // protected static function newFactory(): ProductVariantFactory
-    // {
-    //     // return ProductVariantFactory::new();
-    // }
+    protected static function newFactory(): ProductVariantFactory
+    {
+        return ProductVariantFactory::new();
+    }
 
     public function product(): BelongsTo
     {

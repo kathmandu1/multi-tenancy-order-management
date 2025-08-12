@@ -3,6 +3,7 @@
 namespace Modules\OrderManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\OrderManagement\Models\Product;
 
 class ProductTableSeeder extends Seeder
 {
@@ -11,6 +12,7 @@ class ProductTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        // Call ProductFactory to create products
+        Product::factory()->count(10)->create();
     }
 }

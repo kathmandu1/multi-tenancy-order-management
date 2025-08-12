@@ -42,6 +42,9 @@ class OrderService
             $data = [
                 'customer_id' => $orderDTO->customer_id,
                 'remark' => $orderDTO->remark,
+                // 'order_date' => $orderDTO->order_date,
+                'delivery_date' => $orderDTO->delivery_date,
+                'shipping_address_id' => $orderDTO->shipping_address_id,
             ];
             $order = $this->orderable->create($data);
             $order->orderItems()->createMany($orderDTO->order_items);

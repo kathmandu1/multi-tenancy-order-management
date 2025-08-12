@@ -3,6 +3,7 @@
 namespace Modules\OrderManagement\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\OrderManagement\Models\Order;
 
 class OrderTableSeeder extends Seeder
 {
@@ -11,6 +12,7 @@ class OrderTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        // call OrderFactory to create orders
+        Order::factory()->count(10)->create();
     }
 }

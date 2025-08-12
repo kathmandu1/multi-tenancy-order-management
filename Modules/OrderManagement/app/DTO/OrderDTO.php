@@ -9,6 +9,9 @@ final class OrderDTO
     public function __construct(
         public int $customer_id,
         public ?string $order_code,
+        public ?string $order_date,
+        public string $delivery_date,
+        public int $shipping_address_id,
         public ?float $total_order_amount,
         public ?float $total_discount_amount,
         public ?float $actual_amount,
