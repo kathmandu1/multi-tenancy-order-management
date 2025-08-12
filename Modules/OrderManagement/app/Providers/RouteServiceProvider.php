@@ -4,6 +4,7 @@ namespace Modules\OrderManagement\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -45,6 +46,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+        Route::middleware(['api', InitializeTenancyByRequestData::class])->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
     }
 }

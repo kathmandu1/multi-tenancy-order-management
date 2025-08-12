@@ -21,4 +21,13 @@ class OrderTrackingRequest extends FormRequest
     {
         return true;
     }
+
+    public function prepareForValidation()
+    {
+        if ($this->route('order')) {
+            $this->merge([
+                'order_id' => $this->route('order')
+            ]);
+        }
+    }
 }

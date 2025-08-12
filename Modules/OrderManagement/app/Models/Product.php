@@ -4,7 +4,9 @@ namespace Modules\OrderManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\OrderManagement\Database\Factories\ProductFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Modules\OrderManagement\Database\Factories\ProductFactory;
+
 
 class Product extends Model
 {
@@ -13,10 +15,15 @@ class Product extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $filguardedlable = [];
+    protected $guarded = [];
 
-    // protected static function newFactory(): ProductFactory
-    // {
-    //     // return ProductFactory::new();
-    // }
+    protected static function newFactory(): ProductFactory
+    {
+        return ProductFactory::new();
+    }
+
+    public function productVariant(): HasOne
+    {
+        return $this->hasOne(ProductVariant::class);
+    }
 }

@@ -13,10 +13,15 @@ class OrderTracking extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $guarded = [];
 
     // protected static function newFactory(): OrderTrackingFactory
     // {
     //     // return OrderTrackingFactory::new();
     // }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 }

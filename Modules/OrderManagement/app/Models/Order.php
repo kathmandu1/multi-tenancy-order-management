@@ -4,7 +4,7 @@ namespace Modules\OrderManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\OrderManagement\Database\Factories\OrderFactory;
+use Modules\OrderManagement\Database\Factories\OrderFactory;
 
 class Order extends Model
 {
@@ -15,8 +15,21 @@ class Order extends Model
      */
     protected $guarded = [];
 
-    // protected static function newFactory(): OrderFactory
-    // {
-    //     // return OrderFactory::new();
-    // }
+    protected static function newFactory(): OrderFactory
+    {
+        return OrderFactory::new();
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+    public function orderTracking()
+    {
+        return $this->hasMany(OrderTracking::class);
+    }
 }

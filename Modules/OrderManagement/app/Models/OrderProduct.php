@@ -19,4 +19,14 @@ class OrderProduct extends Model
     // {
     //     // return OrderProductFactory::new();
     // }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
