@@ -3,16 +3,17 @@
 namespace Modules\OrderManagement\Repositories\Order;
 
 use Illuminate\Pipeline\Pipeline;
-use Modules\OrderManagement\Contracts\Order\Productable;
-use Modules\OrderManagement\Models\Product;
+use Modules\OrderManagement\Contracts\Order\OrderTrackable;
+use Modules\OrderManagement\Models\OrderTracking;
+use Modules\OrderManagement\Pipelines\OrderTracking\OrderFilterPipe;
 use Modules\OrderManagement\Repositories\BaseRepository;
 
-class ProductRepository extends BaseRepository implements Productable
+class OrderTrackingRepository extends BaseRepository   implements OrderTrackable
 {
     public function __construct(
-        public Product $product
+        public OrderTracking $orderTracking
     ) {
-        parent::__construct($product);
+        parent::__construct($orderTracking);
     }
 
     public function getAll(
@@ -25,8 +26,7 @@ class ProductRepository extends BaseRepository implements Productable
         $query = app(Pipeline::class)
             ->send($this->model->newQuery())
             ->through([
-                // ClientFilter::class,
-                // Add more filters here if needed
+                OrderFilterPipe::class,
             ])
             ->thenReturn();
 
@@ -38,17 +38,17 @@ class ProductRepository extends BaseRepository implements Productable
             $query->orderBy($orderBy);
         }
 
-
         if (!$pagination && $limit) {
             $query->limit($limit);
         }
 
         return $pagination
-            ? $query->paginate($paginate ?? 05)
+            ? $query->paginate($paginate ?? 15)
             : $query->get();
     }
-    public function getById(int $id): ?Product
+
+    public function getById(int $id): OrderTracking
     {
-        return $this->model->with('productVariants')->find($id);
+        return $this->model->find($id);
     }
 }

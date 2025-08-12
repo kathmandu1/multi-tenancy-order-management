@@ -8,6 +8,7 @@ enum OrderTrackingEnum: string
     case PENDING = 'pending';
     case PROCESSING = 'processing';
     case CONFIRMED = 'confirmed';
+    case SHIPPED = 'shipped ';
     case DELIVERED = 'delivered';
     case PARTIALLYDELIVERED = 'partially delivered';
     case COMPLETED = 'completed';

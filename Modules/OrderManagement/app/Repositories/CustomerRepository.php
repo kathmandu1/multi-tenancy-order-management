@@ -45,8 +45,8 @@ class CustomerRepository extends BaseRepository implements Customerable
             ? $query->paginate($paginate ?? 05)
             : $query->get();
     }
-    public function getById(int $id): ?customer
+    public function getById(int $id): ?Customer
     {
-        return $this->model->with('shift', 'createdBy', 'client.clientGoal', 'client.sector', 'chartReports')->find($id);
+        return $this->model->find($id);
     }
 }

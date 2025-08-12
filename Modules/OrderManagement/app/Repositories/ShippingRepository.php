@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\OrderManagement\Repositories\Order;
+namespace Modules\OrderManagement\Repositories;
 
 use Illuminate\Pipeline\Pipeline;
-use Modules\OrderManagement\Contracts\Order\Productable;
-use Modules\OrderManagement\Models\Product;
-use Modules\OrderManagement\Repositories\BaseRepository;
+use Modules\OrderManagement\Contracts\Shippable;
+use Modules\OrderManagement\Models\Customer;
+use Modules\OrderManagement\Models\CustomerShippingAddress;
 
-class ProductRepository extends BaseRepository implements Productable
+class ShippingRepository extends BaseRepository implements Shippable
 {
     public function __construct(
-        public Product $product
+        public CustomerShippingAddress $customerShippingAddress
     ) {
-        parent::__construct($product);
+        parent::__construct($customerShippingAddress);
     }
 
     public function getAll(
@@ -38,7 +38,6 @@ class ProductRepository extends BaseRepository implements Productable
             $query->orderBy($orderBy);
         }
 
-
         if (!$pagination && $limit) {
             $query->limit($limit);
         }
@@ -47,8 +46,8 @@ class ProductRepository extends BaseRepository implements Productable
             ? $query->paginate($paginate ?? 05)
             : $query->get();
     }
-    public function getById(int $id): ?Product
+    public function getById(int $id): ?CustomerShippingAddress
     {
-        return $this->model->with('productVariants')->find($id);
+        return $this->model->find($id);
     }
 }

@@ -7,9 +7,13 @@ use Illuminate\Support\ServiceProvider;
 use Modules\OrderManagement\Repositories\Order\ProductRepository;
 use Modules\OrderManagement\Contracts\Customerable;
 use Modules\OrderManagement\Contracts\Order\Orderable;
+use Modules\OrderManagement\Contracts\Order\OrderTrackable;
 use Modules\OrderManagement\Contracts\Order\Productable;
+use Modules\OrderManagement\Contracts\Shippable;
 use Modules\OrderManagement\Repositories\CustomerRepository;
 use Modules\OrderManagement\Repositories\Order\OrderRepository;
+use Modules\OrderManagement\Repositories\Order\OrderTrackingRepository;
+use Modules\OrderManagement\Repositories\ShippingRepository;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -164,5 +168,7 @@ class OrderManagementServiceProvider extends ServiceProvider
         $this->app->bind(Customerable::class, CustomerRepository::class);
         $this->app->bind(Productable::class, ProductRepository::class);
         $this->app->bind(Orderable::class, OrderRepository::class);
+        $this->app->bind(OrderTrackable::class, OrderTrackingRepository::class);
+        $this->app->bind(Shippable::class, ShippingRepository::class);
     }
 }

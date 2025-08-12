@@ -49,6 +49,6 @@ class OrderRepository extends BaseRepository implements Orderable
     }
     public function getById(int $id): ?Product
     {
-        return $this->model->with('shift', 'createdBy', 'client.clientGoal', 'client.sector', 'chartReports')->find($id);
+        return $this->model->find($id);
     }
 }

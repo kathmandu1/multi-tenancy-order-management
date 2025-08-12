@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('order_trackings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('order_action_by')->comment('who trigger on order process');
+            $table->unsignedBigInteger('order_action_by')->nullable()->comment('who trigger on order process');
             $table->dateTime('date');
             $table->enum('order_status', array_column(OrderTrackingEnum::cases(), 'value'))->nullable();
             $table->string('remarks')->nullable();
