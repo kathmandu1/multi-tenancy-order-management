@@ -1,0 +1,11 @@
+{
+    "name": "CentralApplication",
+    "alias": "centralapplication",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CentralApplication\\Providers\\CentralApplicationServiceProvider"
+    ],
+    "files": []
+}

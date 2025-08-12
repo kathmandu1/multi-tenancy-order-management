@@ -1,0 +1,54 @@
+<?php
+
+namespace Modules\OrderManagement\Repositories\Order;
+
+use Illuminate\Pipeline\Pipeline;
+use Modules\OrderManagement\Contracts\Order\Orderable;
+use Modules\OrderManagement\Models\Order;
+use Modules\OrderManagement\Models\Product;
+use Modules\OrderManagement\Repositories\BaseRepository;
+
+class OrderRepository extends BaseRepository implements Orderable
+{
+    public function __construct(
+        public Order $order
+    ) {
+        parent::__construct($order);
+    }
+
+    public function getAll(
+        bool $pagination = false,
+        ?int $limit = null,
+        ?string $orderBy = null,
+        ?int $paginate = null,
+        array $withRelations = [],
+    ) {
+        $query = app(Pipeline::class)
+            ->send($this->model->newQuery())
+            ->through([
+                // ClientFilter::class,
+                // Add more filters here if needed
+            ])
+            ->thenReturn();
+
+        if (!empty($withRelations)) {
+            $query->with($withRelations);
+        }
+
+        if ($orderBy) {
+            $query->orderBy($orderBy);
+        }
+
+        if (!$pagination && $limit) {
+            $query->limit($limit);
+        }
+
+        return $pagination
+            ? $query->paginate($paginate ?? 05)
+            : $query->get();
+    }
+    public function getById(int $id): ?Product
+    {
+        return $this->model->find($id);
+    }
+}
