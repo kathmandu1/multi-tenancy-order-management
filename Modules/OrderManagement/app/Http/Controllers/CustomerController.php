@@ -27,7 +27,7 @@ class CustomerController extends Controller
      *     summary="Get customers list",
      *     description="Returns a list of customers. Supports enabling or disabling pagination.",
      *     operationId="getCustomers",
-     *     tags={"Tenants"},
+     *     tags={"Tenants", "Customers"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
@@ -39,13 +39,13 @@ class CustomerController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="tenant_id",
+     *         name="X-Tenant",
      *         in="header",
      *         description="Id of Tenant",
      *         required=true,
      *         @OA\Schema(
      *             type="string",
-     *             example="tenant_name-334455dfdfdd222"
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
      *         )
      *     ),
      *     @OA\Response(
@@ -78,15 +78,14 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         try {
-            $eagerLoadWithRelationData = ['chartItem.chart', 'folder', 'folderItem', 'client', 'createBy', 'verifyBy'];
+            $eagerLoadWithRelationData = [];
             $data = $this->customerService->getAll($request, $eagerLoadWithRelationData);
         } catch (Exception $e) {
-            // dd($e);
             Log::error($e->getmessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return $this->successResponse(CustomerResource::collection($data), 'Chart Record data retrieved successfully');
+        return $this->successResponse(CustomerResource::collection($data), 'Customer data retrieved successfully');
     }
 
 
@@ -96,15 +95,15 @@ class CustomerController extends Controller
      *     summary="Create a new customer",
      *     description="Stores customer information in the system",
      *     operationId="storeCustomer",
-     *     tags={"Tenants"},
+     *     tags={"Tenants", "Customers"},
      *      @OA\Parameter(
-     *         name="tenant_id",
+     *         name="X-Tenant",
      *         in="header",
      *         description="Id of Tenant",
      *         required=true,
      *         @OA\Schema(
      *             type="string",
-     *             example="tenant_name-334455dfdfdd222"
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
      *         )
      *     ),
      *     @OA\RequestBody(
@@ -160,7 +159,7 @@ class CustomerController extends Controller
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return  $this->successResponse(new CustomerResource($data), 'Chart data store successfully', 201);
+        return  $this->successResponse(new CustomerResource($data), 'Customer Data store successfully', 201);
     }
 
     /**
@@ -186,7 +185,7 @@ class CustomerController extends Controller
             Log::error($e->getmessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
-        return  $this->successResponse($data, 'Chart update successfully', 201);
+        return  $this->successResponse($data, 'Customer updated successfully', 201);
     }
 
     /**

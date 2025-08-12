@@ -23,8 +23,8 @@ class ProductService
         try {
             $pagination = false;
             $paginationNumber = null;
-            if ($request->has('pagination') && $request->pagination) {
-                $pagination = true;
+            if ($request->has('pagination') && $request->pagination == true) {
+                $pagination = $request->pagination;
                 $paginationNumber = 10;
             }
             return $this->productable
@@ -39,6 +39,7 @@ class ProductService
         try {
             DB::beginTransaction();
             $data = [
+                'product_name' => $productDTO->product_name,
                 'meta_title' => $productDTO->meta_title,
                 'meta_description' => $productDTO->meta_description,
                 'meta_keywords' => $productDTO->meta_keywords,
@@ -46,13 +47,22 @@ class ProductService
                 'status' => $productDTO->status,
             ];
 
-            $modelData = $this->productable->create($data);
+            $product = $this->productable->create($data);
+            $product->productVariant()->create([
+               'base_price' => $productDTO->base_price,
+               'b2b_price' => $productDTO->b2b_price,
+               'b2c_price' => $productDTO->b2c_price,
+               'batch_no' => $productDTO->batch_no,
+               'lot_no' => $productDTO->lot_no,
+               'available_stock' => $productDTO->available_stock
+            ]);
+
         } catch (Exception $exception) {
             DB::rollback();
             throw new Exception($exception);
         }
         DB::commit();
-        return $modelData;
+        return $product;
     }
 
     public function findById(int $id): Product

@@ -20,6 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        InitializeTenancyByRequestData::$header = 'tenant_id';
+        InitializeTenancyByRequestData::$header = 'X-Tenant';
     }
 }

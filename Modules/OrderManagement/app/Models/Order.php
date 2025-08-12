@@ -19,4 +19,13 @@ class Order extends Model
     // {
     //     // return OrderFactory::new();
     // }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
 }

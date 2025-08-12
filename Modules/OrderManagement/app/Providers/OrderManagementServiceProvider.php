@@ -4,7 +4,7 @@ namespace Modules\OrderManagement\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
-use Modules\Accomodation\Repositories\Order\ProductRepository;
+use Modules\OrderManagement\Repositories\Order\ProductRepository;
 use Modules\OrderManagement\Contracts\Customerable;
 use Modules\OrderManagement\Contracts\Order\Orderable;
 use Modules\OrderManagement\Contracts\Order\Productable;

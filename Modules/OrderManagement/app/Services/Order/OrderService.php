@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Modules\OrderManagement\Contracts\Order\Orderable;
 use Modules\OrderManagement\DTO\OrderDTO;
+use Modules\OrderManagement\Events\OrderCreatedEvent;
 use Modules\OrderManagement\Models\Order;
 
 class OrderService
@@ -40,22 +41,16 @@ class OrderService
             DB::beginTransaction();
             $data = [
                 'customer_id' => $orderDTO->customer_id,
-                'order_code' => $orderDTO->order_code,
-                'total_order_amount' => $orderDTO->total_order_amount,
-                'total_discount_amount' => $orderDTO->total_discount_amount,
-                'actual_amount' => $orderDTO->actual_amount,
-                'status' => $orderDTO->status,
                 'remark' => $orderDTO->remark,
             ];
-
-            $modelData = $this->orderable->create($data);
+            $order = $this->orderable->create($data);
+            $order->orderItems()->createMany($orderDTO->order_items);
         } catch (Exception $exception) {
-            dd($exception);
             DB::rollback();
             throw new Exception($exception);
         }
         DB::commit();
-        return $modelData;
+        return $order;
     }
 
     public function findById(int $id): Order

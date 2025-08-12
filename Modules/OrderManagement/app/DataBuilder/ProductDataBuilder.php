@@ -17,6 +17,12 @@ final class ProductDataBuilder
             meta_keywords: $request->meta_keywords,
             remarks: $request->remarks,
             status: $request->status,
+            base_price: $request->base_price,
+            b2b_price: $request->b2b_price,
+            b2c_price: $request->b2c_price,
+            batch_no: $request->batch_no,
+            lot_no: $request->lot_no,
+            available_stock: $request->available_stock
         );
     }
 }

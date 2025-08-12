@@ -18,6 +18,7 @@ final class OrderDataBuilder
             actual_amount: $request->actual_amount,
             status: $request->status,
             remark: $request->remark,
+            order_items: $request->order_items,
         );
     }
 }

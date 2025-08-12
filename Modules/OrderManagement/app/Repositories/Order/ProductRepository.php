@@ -38,6 +38,7 @@ class ProductRepository extends BaseRepository implements Productable
             $query->orderBy($orderBy);
         }
 
+
         if (!$pagination && $limit) {
             $query->limit($limit);
         }

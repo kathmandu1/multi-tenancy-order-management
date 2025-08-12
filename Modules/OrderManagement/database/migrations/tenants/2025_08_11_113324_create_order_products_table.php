@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('quantity');
             $table->float('price')->comment('price will be set on the basic of b2b and b2c');
+            $table->float('subtotal')->comment('price * quantity sum');
             $table->boolean('status')->comment('if customer cancel any item of order after place');
 
             $table->timestamps();

@@ -11,6 +11,12 @@ final class ProductDTO
         public ?string $meta_keywords,
         public ?string $remarks,
         public ?bool $status,
-
+        public ?string $base_price,
+        public ?string $b2b_price,
+        public ?string $b2c_price,
+        public ?string $batch_no,
+        public ?string $lot_no,
+        public ?string $available_stock
     ) {}
+
 }
