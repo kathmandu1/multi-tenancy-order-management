@@ -44,20 +44,20 @@ services:
       - .docker/mysql/init/init.sql:/usr/local/etc/mysql/init.sql
     environment:
       MYSQL_ROOT_PASSWORD: '@dmin@123'
-      MYSQL_DATABASE: hazesoft
+      MYSQL_DATABASE: "${DB_DATABASE}"
     restart: unless-stopped
     ports:
       - "8003:3306"
     networks:
       - hazesoft
-#   mail:
-#     image: maildev/maildev
-#     ports:
-#         - "1025:1025"
-#         - "9002:1080"
-#     restart: unless-stopped
-#     networks:
-#         - hazesoft
+  mail:
+    image: maildev/maildev
+    ports:
+        - "1025:1025"
+        - "8002:1080"
+    restart: unless-stopped
+    networks:
+        - hazesoft
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

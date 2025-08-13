@@ -15,7 +15,7 @@ final class OrderDTO
      * @OA\Property(property="order_code", type="string", example="ORD-12345"),
      * @OA\Property(property="order_date", type="string", format="date", example="2023-01-01"),
      * @OA\Property(property="delivery_date", type="string", format="date", example="2023-01-05"),
-     * @OA\Property(property="shipping_address_id", type="integer", example=1),
+     * @OA\Property(property="shipping_address_id", type="integer", description="The ID of the shipping address of cutomer, you must ensure it belongs to the customer.", example=1),
      * @OA\Property(property="total_order_amount", type="number", format="float", example=100.00),
      * @OA\Property(property="total_discount_amount", type="number", format="float", example=10.00),
      * @OA\Property(property="actual_amount", type="number", format="float", example=90.00),
