@@ -17,5 +17,6 @@ final class OrderItemDTO
         public int $product_id,
         public int $quantity,
         // public ?float $price
+        public ?int $order_id
     ) {}
 }

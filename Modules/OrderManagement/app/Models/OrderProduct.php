@@ -15,6 +15,7 @@ class OrderProduct extends Model
      */
     protected $guarded = [];
 
+
     // protected static function newFactory(): OrderProductFactory
     // {
     //     // return OrderProductFactory::new();

@@ -114,7 +114,7 @@ class OrderTrackingController extends Controller
      *                 property="date",
      *                 type="string",
      *                 format="date-time",
-     *                 example="2025-08-12T10:00:00Z"
+     *                 example="2025-08-10 10:00:00"
      *             ),
      *             @OA\Property(
      *                 property="order_status",
