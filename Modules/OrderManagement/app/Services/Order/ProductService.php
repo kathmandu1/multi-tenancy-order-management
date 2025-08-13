@@ -49,14 +49,13 @@ class ProductService
 
             $product = $this->productable->create($data);
             $product->productVariant()->create([
-               'base_price' => $productDTO->base_price,
-               'b2b_price' => $productDTO->b2b_price,
-               'b2c_price' => $productDTO->b2c_price,
-               'batch_no' => $productDTO->batch_no,
-               'lot_no' => $productDTO->lot_no,
-               'available_stock' => $productDTO->available_stock
+                'base_price' => $productDTO->base_price,
+                'b2b_price' => $productDTO->b2b_price,
+                'b2c_price' => $productDTO->b2c_price,
+                'batch_no' => $productDTO->batch_no,
+                'lot_no' => $productDTO->lot_no,
+                'available_stock' => $productDTO->available_stock
             ]);
-
         } catch (Exception $exception) {
             DB::rollback();
             throw new Exception($exception);
@@ -92,6 +91,19 @@ class ProductService
 
 
             $modelData = $this->productable->update($id, $data);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new Exception($exception);
+        }
+        DB::commit();
+        return $modelData;
+    }
+
+    public function delete($id)
+    {
+        try {
+            DB::beginTransaction();
+            $modelData = $this->productable->delete($id);
         } catch (Exception $exception) {
             DB::rollBack();
             throw new Exception($exception);

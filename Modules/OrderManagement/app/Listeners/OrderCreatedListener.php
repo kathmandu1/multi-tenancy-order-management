@@ -19,12 +19,12 @@ class OrderCreatedListener
      */
     public function handle(OrderCreatedEvent $orderCreatedEvent): void
     {
-        $orderItems = $orderCreatedEvent->order->orderItems;
-        $grandTotal = $orderItems->sum('subtotal');
-        $orderCreatedEvent->order->update([
-            'total_order_amount' => $grandTotal,
-            'actual_amount' => $grandTotal,
-        ]);
+        // $orderItems = $orderCreatedEvent->order->orderItems;
+        // $grandTotal = $orderItems->sum('subtotal');
+        // $orderCreatedEvent->order->update([
+        //     'total_order_amount' => $grandTotal,
+        //     'actual_amount' => $grandTotal,
+        // ]);
 
       // send notifcation activity to job and queue
     }

@@ -52,23 +52,16 @@ class CustomerController extends Controller
      *         response=200,
      *         description="List of customers",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="name", type="string", example="John Doe"),
-     *                     @OA\Property(property="address", type="string", example="123 Main St"),
-     *                     @OA\Property(property="phone", type="string", example="+977-9800000000"),
-     *                     @OA\Property(property="email", type="string", example="john@example.com"),
-     *                     @OA\Property(property="price_type", type="string", example="retail")
-     *                 )
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Customer retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/CustomerResourceSchema")
      *             ),
-     *             @OA\Property(property="pagination", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationSchema"
      *             )
      *         )
      *     )
@@ -78,10 +71,10 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         try {
-            $eagerLoadWithRelationData = [];
+            $eagerLoadWithRelationData = ['shippingAddresses'];
             $data = $this->customerService->getAll($request, $eagerLoadWithRelationData);
         } catch (Exception $e) {
-            Log::error($e->getmessage());
+            Log::error($e->getMessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
 
@@ -95,7 +88,7 @@ class CustomerController extends Controller
      *     summary="Create a new customer",
      *     description="Stores customer information in the system",
      *     operationId="storeCustomer",
-     *     tags={"Tenants", "Customers"},
+     *     tags={"Customers"},
      *      @OA\Parameter(
      *         name="X-Tenant",
      *         in="header",
@@ -109,33 +102,32 @@ class CustomerController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             type="object",
-     *             required={"name"},
-     *             @OA\Property(property="name", type="string", example="Ali Baba"),
-     *             @OA\Property(property="address", type="string", nullable=true, example="123 Main St, City"),
-     *             @OA\Property(property="phone", type="string", nullable=true, example="+977-9800000000"),
-     *             @OA\Property(property="email", type="string", nullable=true, format="email", example="alibaba@example.com"),
-     *             @OA\Property(property="price_type", type="string", nullable=true, example="b2b price")
+     *          ref="#/components/schemas/customerCreateSchema"
      *         )
      *     ),
-     *     @OA\Response(
+     *      @OA\Response(
      *         response=201,
      *         description="Customer created successfully",
      *         @OA\JsonContent(
-     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Customer created successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="John Doe"),
-     *                 @OA\Property(property="address", type="string", example="123 Main St, City"),
-     *                 @OA\Property(property="phone", type="string", example="+977-9800000000"),
-     *                 @OA\Property(property="email", type="string", example="john@example.com"),
-     *                 @OA\Property(property="price_type", type="string", example="b2b price")
-     *             )
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 ref="#/components/schemas/CustomerResourceSchema"
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
      *         response=400,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
      *         description="Validation error",
      *         @OA\JsonContent(
      *             type="object",
@@ -149,13 +141,10 @@ class CustomerController extends Controller
     {
         $payload = $request->all();
         try {
-
-            // Single object
             $createDataDTO = CustomerDataBuilder::getDtoData($request);
             $data =  $this->customerService->store($createDataDTO);
         } catch (Exception $e) {
-            dd($e);
-            Log::error($e->getmessage());
+            Log::error($e->getMessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
 
@@ -163,17 +152,112 @@ class CustomerController extends Controller
     }
 
     /**
-     * Show the specified resource.
+     * @OA\Get(
+     *     path="/api/customers/{id}",
+     *     summary="Get customer by ID",
+     *     description="Returns a single customer by their ID",
+     *     operationId="getCustomerById",
+     *     tags={"Customers"},
+     *     @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of Customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Customer retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Customer retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/CustomerResourceSchema")
+     *             ),
+     *         )
+     *     )
+     * )
      */
+
     public function show($id)
     {
-        $data =  $this->customerService->findById($id);
-        return CustomerResource::make($data);
+        try {
+            $customer =  $this->customerService->findById($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return  $this->errorResponse('Something went wrong', 500);
+        }
+        return $this->successResponse(new CustomerResource($customer), 'Customer retrieved successfully', 200);
     }
 
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Patch(
+     *     path="/api/customers/{id}",
+     *     summary="Update an existing customer",
+     *     description="Updates customer information in the system",
+     *     operationId="updateCustomer",
+     *     tags={ "Customers"},
+     *      @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of Customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *          ref="#/components/schemas/customerCreateSchema"
+     *         )
+     *     ),
+     *      @OA\Response(
+     *         response=200,
+     *         description="List of customers",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Customer update successfully"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
+     *     ),
+     *     security={{ "bearerAuth": {} }}
+     * )
      */
     public function update(CustomerRequest $request, $id)
     {
@@ -185,14 +269,53 @@ class CustomerController extends Controller
             Log::error($e->getmessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
-        return  $this->successResponse($data, 'Customer updated successfully', 201);
+        return  $this->successResponse($data, 'Customer updated successfully', 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Delete(
+     *     path="/api/customers/{id}",
+     *     summary="Delete customer by ID",
+     *     description="Deletes a single customer by their ID",
+     *     operationId="deleteCustomerById",
+     *     tags={"Customers"},
+     *     @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of Customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Customer deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *         )
+     *     )
+     * )
      */
     public function destroy($id)
     {
-        //
+        try {
+            $delete =  $this->customerService->delete($id);
+        } catch (Exception $e) {
+            Log::error($e->getmessage());
+            return  $this->errorResponse('Something went wrong', 500);
+        }
+        return  $this->successResponse(204);
     }
 }

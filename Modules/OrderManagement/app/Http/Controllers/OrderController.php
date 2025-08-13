@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Modules\CentralApplication\Traits\ApiResponse;
 use Modules\OrderManagement\DataBuilder\OrderDataBuilder;
+use Modules\OrderManagement\DataBuilder\OrderItemDataBuilder;
 use Modules\OrderManagement\Events\OrderCreatedEvent;
 use Modules\OrderManagement\Http\Requests\OrderRequest;
+use Modules\OrderManagement\Http\Requests\UpdateOrderItemsRequest;
+use Modules\OrderManagement\Models\Order;
 use Modules\OrderManagement\Services\Order\OrderService;
 use Modules\OrderManagement\Transformers\OrderResource;
 
@@ -24,14 +27,54 @@ class OrderController extends Controller
     /**
      * @OA\Get(
      *     path="/api/orders",
-     *     summary="Get orders list",
+     *     summary="Get orders list, use parameter for filtering such as filter by customer, delivery date and deliver and pending orders",
      *     description="Returns a list of orders. Supports enabling or disabling pagination.",
      *     operationId="getOrders",
-     *     tags={"Tenants", "Orders"},
+     *     tags={"Orders"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
      *         description="Enable or disable pagination (true or false)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="boolean",
+     *             example=1
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="delivery_date_from",
+     *         in="query",
+     *         description="Filter orders by delivery date from (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="date",
+     *             example="2023-01-01"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="delivery_date_to",
+     *         in="query",
+     *         description="Filter orders by delivery date to (YYYY-MM-DD)",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="date",
+     *             example="2023-01-01"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="customer_id",
+     *         in="query",
+     *         description="Filter orders by customer ID",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Filter orders by status, 0 for pending, 1 for completed",
      *         required=false,
      *         @OA\Schema(
      *             type="boolean",
@@ -48,27 +91,30 @@ class OrderController extends Controller
      *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
      *         )
      *     ),
-     *     @OA\Response(
+     *      @OA\Parameter(
+     *         name="shipping_address",
+     *         in="query",
+     *         description="Shipping address for the order, it will return all order matching to shipping address",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="kathmandu"
+     *         )
+     *     ),
+     *      @OA\Response(
      *         response=200,
      *         description="List of orders",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="product_name", type="string", example="Apple pro max"),
-     *                     @OA\Property(property="meta_title", type="string", example="Ios"),
-     *                     @OA\Property(property="meta_description", type="string", example="smartphone, cellphone"),
-     *                     @OA\Property(property="status", type="string", example="true"),
-     *                     @OA\Property(property="remarks", type="string", example="product sample")
-     *                 )
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order data retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/orderResourceSchema")
      *             ),
-     *             @OA\Property(property="meta", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationSchema"
      *             )
      *         )
      *     )
@@ -78,7 +124,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $eagerLoadWithRelationData = [];
+            $eagerLoadWithRelationData = ['customer', 'orderItems', 'orderTracking', 'shippingAddress'];
             $data = $this->orderService->getAll($request, $eagerLoadWithRelationData);
         } catch (Exception $e) {
             Log::error($e->getmessage());
@@ -92,60 +138,35 @@ class OrderController extends Controller
     /**
      * @OA\Post(
      *     path="/api/orders",
-     *     tags={"Tenants", "Orders"},
+     *     tags={"Orders"},
      *     summary="Create a new customer order",
-     *     description="Creates a new order for a customer inside a tenant.",
+     *     description="Create a new order for a customer inside a tenant.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="customer_id",
-     *                 type="integer",
-     *                 example=1
-     *             ),
-     *             @OA\Property(
-     *                 property="remark",
-     *                 type="string",
-     *                 example="Sample remark"
-     *             ),
-     *              @OA\Property(
-     *                  property="delivery_date",
-     *                  type="string",
-     *                  format="date",
-     *                  example="2025-08-12"
-     *              ),
-     *              @OA\Property(
-     *                  property="shipping_address_id",
-     *                  type="integer",
-     *                  example=1
-     *              ),
-     *             @OA\Property(
-     *                 property="order_items",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(
-     *                         property="product_id",
-     *                         type="integer",
-     *                         example=1
-     *                     ),
-     *                     @OA\Property(
-     *                         property="quantity",
-     *                         type="integer",
-     *                         example=4
-     *                     )
-     *                 )
-     *             )
+     *          ref="#/components/schemas/customerOrderSchema"
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Order created successfully"
+     *         description="Order created successfully",
+     *        @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/orderResourceSchema"
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input"
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="X-Tenant",
@@ -173,10 +194,53 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the specified resource.
+     * @OA\Get(
+     *     path="/api/orders/{id}",
+     *     summary="Get order details",
+     *     description="Returns the details of a specific order.",
+     *     operationId="getOrder",
+     *     tags={"Orders"},
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The unique identifier of the order.",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *      @OA\Response(
+     *         response=200,
+     *         description="Details of the order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/orderResourceSchema"
+     *             ),
+     *         )
+     *         )
+     *     )
+     * )
      */
+
     public function show($id)
     {
+        // @todo Implement the show method with proper response
+
         $data =  $this->orderService->findById($id);
         return OrderResource::make($data);
     }
@@ -199,10 +263,67 @@ class OrderController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @OA\Patch(
+     * path="/api/orders/{order}/orderitems",
+     * tags={"Orders"},
+     * summary="Update items of an existing order, remove and add item from order until order is confirm",
+     * description="Add, remove, or update quantities of items in an order.",
+     * @OA\Parameter(
+     * name="order",
+     * in="path",
+     * required=true,
+     * @OA\Schema(type="integer"),
+     * description="Order ID"
+     * ),
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(
+     * property="order_items",
+     * type="array",
+     * @OA\Items(
+     * @OA\Property(property="product_id", type="integer", example=1),
+     * @OA\Property(property="quantity", type="integer", example=3)
+     * )
+     * )
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Order items updated successfully",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="success"),
+     * @OA\Property(property="message", type="string", example="Order items updated successfully"),
+     * @OA\Property(
+     * property="data",
+     * type="object",
+     * ref="#/components/schemas/orderResourceSchema"
+     * ),
+     * )
+     * ),
+     * @OA\Response(
+     * response=404,
+     * description="Order not found"
+     * ),
+     * @OA\Parameter(
+     * name="X-Tenant",
+     * in="header",
+     * required=true,
+     * @OA\Schema(type="string"),
+     * description="Tenant identifier",
+     * example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     * )
+     * )
      */
-    public function destroy($id)
+    public function updateOrderItems(UpdateOrderItemsRequest $request,  $orderID)
     {
-        //
+        try {
+            $updatedOrder = $this->orderService->updateOrderItems($request->order_items, $orderID);
+        } catch (Exception $e) {
+            dd($e);
+            Log::error($e->getMessage());
+            return $this->errorResponse('Something went wrong', 500);
+        }
+        return $this->successResponse(new OrderResource($updatedOrder), 'Order items updated successfully');
     }
 }
