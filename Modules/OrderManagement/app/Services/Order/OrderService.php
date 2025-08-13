@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Modules\OrderManagement\Contracts\Order\Orderable;
+use Modules\OrderManagement\Contracts\Order\Productable;
 use Modules\OrderManagement\DTO\OrderDTO;
 use Modules\OrderManagement\Events\OrderCreatedEvent;
 use Modules\OrderManagement\Models\Order;
+use Modules\OrderManagement\Models\OrderProduct;
 
 class OrderService
 {
     public function __construct(
-
-        public  Orderable $orderable
+        public  Orderable $orderable,
+        public Productable $productable,
     ) {}
 
     public function getAll($request, $eagerLoadWithRelationData = []): Collection|LengthAwarePaginator
@@ -42,12 +44,22 @@ class OrderService
             $data = [
                 'customer_id' => $orderDTO->customer_id,
                 'remark' => $orderDTO->remark,
-                // 'order_date' => $orderDTO->order_date,
                 'delivery_date' => $orderDTO->delivery_date,
                 'shipping_address_id' => $orderDTO->shipping_address_id,
             ];
             $order = $this->orderable->create($data);
-            $order->orderItems()->createMany($orderDTO->order_items);
+
+            $totalOrderAmount = 0;
+            foreach ($orderDTO->order_items as $item) {
+                $orderProduct = $order->orderItems()->create($item);
+                $totalOrderAmount += ($orderProduct->price * $item['quantity']);
+            }
+
+            $actualAmount = $totalOrderAmount - $order->total_discount_amount;
+            $order->update([
+                'total_order_amount' => $totalOrderAmount,
+                'actual_amount' => $actualAmount,
+            ]);
         } catch (Exception $exception) {
             DB::rollback();
             throw new Exception($exception);
@@ -88,5 +100,47 @@ class OrderService
         }
         DB::commit();
         return $modelData;
+    }
+
+    public function updateOrderItems(array $items, int $orderId): Order
+    {
+        try {
+            return DB::transaction(function () use ($orderId, $items) {
+                $order = $this->orderable->getById($orderId);
+                $currentProductIds = $order->orderItems()->pluck('product_id')->toArray();
+                $newProductIds = collect($items)->pluck('product_id')->toArray();
+
+                // Identify and remove items that are no longer in the new orderitems
+                $itemsToRemove = array_diff($currentProductIds, $newProductIds);
+                if (!empty($itemsToRemove)) {
+                    $order->orderItems()->whereIn('product_id', $itemsToRemove)->delete();
+                }
+
+                // Add or update items based on the new orderitems
+                $totalOrderAmount = 0;
+                foreach ($items as $item) {
+                    $orderProduct = OrderProduct::updateOrCreate(
+                        [
+                            'order_id' => $order->id,
+                            'product_id' => $item['product_id'],
+                        ],
+                        [
+                            'quantity' => $item['quantity'],
+                        ]
+                    );
+                    $totalOrderAmount += ($orderProduct->price * $item['quantity']);
+                }
+                $actualAmount = $totalOrderAmount - $order->total_discount_amount;
+
+                $order->update([
+                    'total_order_amount' => $totalOrderAmount,
+                    'actual_amount' => $actualAmount,
+                ]);
+
+                return  $order->fresh();
+            });
+        } catch (Exception $exception) {
+            throw new Exception($exception);
+        }
     }
 }

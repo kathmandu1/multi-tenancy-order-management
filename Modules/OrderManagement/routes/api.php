@@ -19,6 +19,8 @@ Route::apiResource('customers.shippingaddresses', CustomerShippingAddressControl
 
 Route::apiResource('products', ProductController::class)->names('products');
 Route::apiResource('orders', OrderController::class)->names('orders');
+Route::patch('orders/{order}/orderitems', [OrderController::class, 'updateOrderItems']);
 Route::apiResource('orders.trackings', OrderTrackingController::class)
     ->shallow() // optional: makes tracking routes not require {order} for show/update/delete
     ->names('orders.trackings');
+

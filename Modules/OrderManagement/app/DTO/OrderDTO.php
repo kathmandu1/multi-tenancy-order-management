@@ -6,6 +6,26 @@ use InvalidArgumentException;
 
 final class OrderDTO
 {
+    /**
+     * @OA\Schema(
+     * schema="customerOrderSchema",
+     * title="Customer Order Schema",
+     * description="A schema for creating a new customer order.",
+     * @OA\Property(property="customer_id", type="integer", example=1),
+     * @OA\Property(property="order_code", type="string", example="ORD-12345"),
+     * @OA\Property(property="order_date", type="string", format="date", example="2023-01-01"),
+     * @OA\Property(property="delivery_date", type="string", format="date", example="2023-01-05"),
+     * @OA\Property(property="shipping_address_id", type="integer", example=1),
+     * @OA\Property(property="total_order_amount", type="number", format="float", example=100.00),
+     * @OA\Property(property="total_discount_amount", type="number", format="float", example=10.00),
+     * @OA\Property(property="actual_amount", type="number", format="float", example=90.00),
+     * @OA\Property(property="status", type="boolean", example=true),
+     * @OA\Property(property="remark", type="string", example="Please deliver between 9 AM and 5 PM"),
+     * @OA\Property(property="order_items", type="array",
+     *     @OA\Items(ref="#/components/schemas/orderItemSchema")
+     * )
+     * )
+     */
     public function __construct(
         public int $customer_id,
         public ?string $order_code,

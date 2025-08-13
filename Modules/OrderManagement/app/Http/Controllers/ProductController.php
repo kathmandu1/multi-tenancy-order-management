@@ -47,27 +47,20 @@ class ProductController extends Controller
      *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
      *         )
      *     ),
-     *     @OA\Response(
+     *      @OA\Response(
      *         response=200,
-     *         description="List of customers",
+     *         description="List of products",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="product_name", type="string", example="Apple pro max"),
-     *                     @OA\Property(property="meta_title", type="string", example="Ios"),
-     *                     @OA\Property(property="meta_description", type="string", example="smartphone, cellphone"),
-     *                     @OA\Property(property="status", type="string", example="true"),
-     *                     @OA\Property(property="remarks", type="string", example="product sample")
-     *                 )
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Products retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/ProductResourceSchema")
      *             ),
-     *             @OA\Property(property="meta", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationSchema"
      *             )
      *         )
      *     )
@@ -93,7 +86,7 @@ class ProductController extends Controller
      *     summary="Create a new product",
      *     description="Stores product information in the system",
      *     operationId="storeProduct",
-     *     tags={"Tenants", "Products"},
+     *     tags={"Products"},
      *      @OA\Parameter(
      *         name="X-Tenant",
      *         in="header",
@@ -107,38 +100,24 @@ class ProductController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             type="object",
-     *             required={"product_name"},
-     *             @OA\Property(property="product_name", type="string", example="i phoneBaba"),
-     *             @OA\Property(property="meta_title", type="string", nullable=true, example="product"),
-     *             @OA\Property(property="meta_description", type="string", nullable=true, example="This is a sample product"),
-     *             @OA\Property(property="meta_keywords", type="string", nullable=true, format="email", example="product, stock"),
-     *             @OA\Property(property="base_price", type="string", nullable=true, example="1500"),
-     *             @OA\Property(property="b2b_price", type="string", nullable=true, example="1600"),
-     *             @OA\Property(property="b2c_price", type="string", nullable=true, example="2000"),
-     *             @OA\Property(property="batch_no", type="string", nullable=true, example="batch-001"),
-     *             @OA\Property(property="lot_no", type="string", nullable=true, example="lot-001"),
-     *             @OA\Property(property="available_stock", type="string", nullable=true, example="100"),
+     *          ref="#/components/schemas/productCreateSchema"
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
      *         description="Product created successfully",
-     *         @OA\JsonContent(
-     *             type="object",
+     *        @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
      *             @OA\Property(property="message", type="string", example="Product created successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="John Doe"),
-     *                 @OA\Property(property="address", type="string", example="123 Main St, City"),
-     *                 @OA\Property(property="phone", type="string", example="+977-9800000000"),
-     *                 @OA\Property(property="email", type="string", example="john@example.com"),
-     *                 @OA\Property(property="price_type", type="string", example="b2b price")
-     *             )
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/ProductResourceSchema"
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
+     *         response=422,
      *         description="Validation error",
      *         @OA\JsonContent(
      *             type="object",
@@ -170,7 +149,59 @@ class ProductController extends Controller
         return ProductResource::make($data);
     }
 
-
+    /**
+     * @OA\Patch(
+     *     path="/api/products/{id}",
+     *     summary="Update an existing product",
+     *     description="Updates product information in the system",
+     *     operationId="updateProduct",
+     *     tags={"Products"},
+     *      @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of Customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *          ref="#/components/schemas/productCreateSchema"
+     *         )
+     *     ),
+     *      @OA\Response(
+     *         response=200,
+     *         description="List of products",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Product update successfully"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
+     *     ),
+     *     security={{ "bearerAuth": {} }}
+     * )
+     */
 
     public function update(ProductRequest $request, $id)
     {
@@ -179,6 +210,7 @@ class ProductController extends Controller
             $createDataDTO = ProductDataBuilder::getDtoData($request);
             $data =  $this->productService->update($createDataDTO, $id);
         } catch (Exception $e) {
+            dd($e);
             Log::error($e->getmessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
@@ -186,8 +218,50 @@ class ProductController extends Controller
     }
 
 
+    /**
+     * @OA\Delete(
+     *     path="/api/products/{id}",
+     *     summary="Delete product by ID",
+     *     description="Deletes a single product by their ID",
+     *     operationId="deleteProductById",
+     *     tags={"Products"},
+     *     @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Id of Customer",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Product deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *         )
+     *     )
+     * )
+     */
     public function destroy($id)
     {
-        //
+        try {
+            $delete =  $this->productService->delete($id);
+        } catch (Exception $e) {
+            Log::error($e->getmessage());
+            return  $this->errorResponse('Something went wrong', 500);
+        }
+        return  $this->successResponse(204);
     }
 }

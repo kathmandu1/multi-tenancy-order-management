@@ -5,7 +5,11 @@ namespace Modules\OrderManagement\Repositories\Order;
 use Illuminate\Pipeline\Pipeline;
 use Modules\OrderManagement\Contracts\Order\Orderable;
 use Modules\OrderManagement\Models\Order;
-use Modules\OrderManagement\Models\Product;
+use Modules\OrderManagement\Pipelines\Order\CustomerFilterPipe;
+use Modules\OrderManagement\Pipelines\Order\DeliveryAddressFilterPipe;
+use Modules\OrderManagement\Pipelines\Order\DeliveryDateFilterPipe;
+use Modules\OrderManagement\Pipelines\Order\StatusFilterPipe;
+use Modules\OrderManagement\Pipelines\OrderTracking\OrderStatusFilterPipe;
 use Modules\OrderManagement\Repositories\BaseRepository;
 
 class OrderRepository extends BaseRepository implements Orderable
@@ -26,8 +30,10 @@ class OrderRepository extends BaseRepository implements Orderable
         $query = app(Pipeline::class)
             ->send($this->model->newQuery())
             ->through([
-                // ClientFilter::class,
-                // Add more filters here if needed
+                DeliveryDateFilterPipe::class,
+                StatusFilterPipe::class,
+                CustomerFilterPipe::class,
+                DeliveryAddressFilterPipe::class,
             ])
             ->thenReturn();
 
@@ -47,8 +53,9 @@ class OrderRepository extends BaseRepository implements Orderable
             ? $query->paginate($paginate ?? 05)
             : $query->get();
     }
-    public function getById(int $id): ?Product
+
+    public function getById(int $id): ?Order
     {
-        return $this->model->find($id);
+        return $this->model->with(['customer', 'orderItems', 'orderTracking', 'shippingAddress'])->find($id);
     }
 }

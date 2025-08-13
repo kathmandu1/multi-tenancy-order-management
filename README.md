@@ -1,61 +1,26 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+## About Multi Tenancy Order Management System
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This multi-tenant order management system with a separate database per tenant, each tenant is distinctly identified by a unique tenant_id. This architecture ensures complete data isolation and security, as each tenant's products and orders reside in their own dedicated database. The system is designed to handle orders from creation to delivery, with a robust order tracking feature. When an order is placed, it is initially in a 'processing' state. As the order is fulfilled and leaves the warehouse, its status is updated to 'shipped'. The system provides real-time updates as the order moves through the logistics chain, and finally, the status changes to 'delivered' once the customer receives their package. This setup provides each tenant with a private and secure order management solution, while offering a comprehensive and transparent tracking experience for their customers. We have following Module:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [Central Application (responsible for creating tenants)](https://github.com/kathmandu1/multi-tenancy-order-management/tree/main/Modules/CentralApplication).
+- [Order Management (responseble for product, shipping and order management for tenants)](https://github.com/kathmandu1/multi-tenancy-order-management/tree/main/Modules/OrderManagement).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This Application Backend is Build on Laravel lastest version using Swagger-OpenAPI for APi docmentation
 
-## Learning Laravel
+## Architecture and Design Pattern
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The system's architecture is built on a clear separation of concerns, ensuring maintainability and scalability. Data transfer objects [(DTOs )](https://en.wikipedia.org/wiki/Data_transfer_object) and the DataBuilder pattern are employed for efficient data mapping, isolating the application's internal data structures from the data exposed to clients. This approach simplifies data transformation and enhances security by controlling which data fields are shared. Business logic is encapsulated within dedicated service classes, providing a single, consistent entry point for all operations and preventing code duplication. Data persistence is handled by the repository pattern, which abstracts the underlying data storage mechanism. This separation allows for flexible database changes without affecting the core application logic. Furthermore, the system adheres to the single responsibility principle, with each class designed to handle a specific, isolated functionality. This modular design minimizes dependencies, making the codebase easier to understand, test, and modify.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+### DESIGN Pattern Used For Appication
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **[Pipeline Pattern ( For complex Search, Filter)](https://abc.com)**
+- **[Repository Pattern (For chanagable data source and expandable Data abstration)](https://abc.com)**
+- **[Service Pattern (Resuable and central business logic)](https://abc.com)**
+- **[DTO Pattern (Add Data Security layer and Consistency which data exachanfe between layer)](https://abc.com)**
+- **[TDD Pattern (Test each and individual componets of system and ensure that they work as expected)](https://abc.com)**
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

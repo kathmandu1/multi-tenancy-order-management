@@ -4,7 +4,7 @@ namespace Modules\OrderManagement\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomerShippingRequest extends FormRequest
+class UpdateOrderItemsRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -24,9 +24,10 @@ class CustomerShippingRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if ($this->route('customer')) {
+
+        if ($this->route('order')) {
             $this->merge([
-                'customer_id' => $this->route('customer')
+                'order_id' => $this->route('order')
             ]);
         }
     }
