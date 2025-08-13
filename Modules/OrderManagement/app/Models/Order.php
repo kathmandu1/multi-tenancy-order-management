@@ -19,6 +19,7 @@ class Order extends Model
     {
         return OrderFactory::new();
     }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -28,8 +29,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderProduct::class);
     }
+
     public function orderTracking()
     {
         return $this->hasMany(OrderTracking::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->belongsTo(CustomerShippingAddress::class);
     }
 }

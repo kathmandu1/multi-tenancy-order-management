@@ -38,7 +38,7 @@ class CustomerService
     {
         try {
             DB::beginTransaction();
-          $data = [
+            $data = [
                 'name' => $customerDTO->name,
                 'address' => $customerDTO->address,
                 'phone' => $customerDTO->phone,
@@ -89,5 +89,18 @@ class CustomerService
         }
         DB::commit();
         return $modelData;
+    }
+
+    public function delete($id): bool
+    {
+        try {
+            DB::beginTransaction();
+            $this->customerable->delete($id);
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw new Exception($exception);
+        }
+        DB::commit();
+        return true;
     }
 }

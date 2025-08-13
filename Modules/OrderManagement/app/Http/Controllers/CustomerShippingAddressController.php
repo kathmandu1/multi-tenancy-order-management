@@ -27,7 +27,7 @@ class CustomerShippingAddressController extends Controller
      *     summary="Get customer's shipping addresses",
      *     description="Returns a list of shipping addresses for a specific customer.",
      *     operationId="getCustomerShippingAddresses",
-     *     tags={"Tenants", "Customers"},
+     *     tags={"Customers"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
@@ -105,7 +105,7 @@ class CustomerShippingAddressController extends Controller
      *     summary="Create a new customer shipping address",
      *     description="Stores customer shipping address information in the system",
      *     operationId="storeCustomerShippingAddress",
-     *     tags={"Tenants", "Customers"},
+     *     tags={"Customers"},
      *      @OA\Parameter(
      *         name="X-Tenant",
      *         in="header",

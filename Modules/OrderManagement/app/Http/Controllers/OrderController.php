@@ -27,7 +27,7 @@ class OrderController extends Controller
      *     summary="Get orders list",
      *     description="Returns a list of orders. Supports enabling or disabling pagination.",
      *     operationId="getOrders",
-     *     tags={"Tenants", "Orders"},
+     *     tags={"Orders"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
@@ -48,27 +48,20 @@ class OrderController extends Controller
      *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
      *         )
      *     ),
-     *     @OA\Response(
+     *      @OA\Response(
      *         response=200,
      *         description="List of orders",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="product_name", type="string", example="Apple pro max"),
-     *                     @OA\Property(property="meta_title", type="string", example="Ios"),
-     *                     @OA\Property(property="meta_description", type="string", example="smartphone, cellphone"),
-     *                     @OA\Property(property="status", type="string", example="true"),
-     *                     @OA\Property(property="remarks", type="string", example="product sample")
-     *                 )
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order data retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/orderResourceSchema")
      *             ),
-     *             @OA\Property(property="meta", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationSchema"
      *             )
      *         )
      *     )
@@ -92,60 +85,35 @@ class OrderController extends Controller
     /**
      * @OA\Post(
      *     path="/api/orders",
-     *     tags={"Tenants", "Orders"},
+     *     tags={"Orders"},
      *     summary="Create a new customer order",
      *     description="Creates a new order for a customer inside a tenant.",
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="customer_id",
-     *                 type="integer",
-     *                 example=1
-     *             ),
-     *             @OA\Property(
-     *                 property="remark",
-     *                 type="string",
-     *                 example="Sample remark"
-     *             ),
-     *              @OA\Property(
-     *                  property="delivery_date",
-     *                  type="string",
-     *                  format="date",
-     *                  example="2025-08-12"
-     *              ),
-     *              @OA\Property(
-     *                  property="shipping_address_id",
-     *                  type="integer",
-     *                  example=1
-     *              ),
-     *             @OA\Property(
-     *                 property="order_items",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(
-     *                         property="product_id",
-     *                         type="integer",
-     *                         example=1
-     *                     ),
-     *                     @OA\Property(
-     *                         property="quantity",
-     *                         type="integer",
-     *                         example=4
-     *                     )
-     *                 )
-     *             )
+     *          ref="#/components/schemas/customerOrderSchema"
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Order created successfully"
+     *         description="Order created successfully",
+     *        @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/orderResourceSchema"
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input"
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="X-Tenant",
@@ -172,9 +140,50 @@ class OrderController extends Controller
         return  $this->successResponse(new OrderResource($order), 'Order data store successfully', 201);
     }
 
-    /**
-     * Show the specified resource.
+   /**
+     * @OA\Get(
+     *     path="/api/orders/{id}",
+     *     summary="Get order details",
+     *     description="Returns the details of a specific order.",
+     *     operationId="getOrder",
+     *     tags={"Orders"},
+     *      @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="The unique identifier of the order.",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="X-Tenant",
+     *         in="header",
+     *         description="Id of Tenant",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="71662abc-5751-4bcc-a61f-24a4ec7ef698"
+     *         )
+     *     ),
+     *      @OA\Response(
+     *         response=200,
+     *         description="Details of the order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/orderResourceSchema"
+     *             ),
+     *         )
+     *         )
+     *     )
+     * )
      */
+
     public function show($id)
     {
         $data =  $this->orderService->findById($id);
@@ -198,11 +207,4 @@ class OrderController extends Controller
         return  $this->successResponse($data, 'Order update successfully', 201);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

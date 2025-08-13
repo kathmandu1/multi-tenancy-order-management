@@ -49,6 +49,6 @@ class ProductRepository extends BaseRepository implements Productable
     }
     public function getById(int $id): ?Product
     {
-        return $this->model->with('productVariants')->find($id);
+        return $this->model->with('productVariant')->find($id);
     }
 }

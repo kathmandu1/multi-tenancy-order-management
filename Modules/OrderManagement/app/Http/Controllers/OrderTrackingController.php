@@ -27,7 +27,7 @@ class OrderTrackingController extends Controller
      *     summary="Get order tracking information information regarding when order is processed, when order is delivered",
      *     description="Returns tracking information for a specific order.",
      *     operationId="getOrderTracking",
-     *     tags={"Tenants", "Orders"},
+     *     tags={"Orders"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
