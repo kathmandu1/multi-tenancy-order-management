@@ -14,12 +14,9 @@ class OrderObserver
      */
     public function creating(Order $order): void
     {
-        // Generate order_code if not provided
         if (empty($order->order_code)) {
             $order->order_code = 'ORD-' . strtoupper(Str::random(8));
         }
-
-        // Auto-calculate actual_amount
         $order->actual_amount = $order->total_order_amount - ($order->total_discount_amount ?? 0);
         $order->status = $order->status ?? true; // Default status to true if not set
     }
