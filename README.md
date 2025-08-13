@@ -24,3 +24,70 @@ The system's architecture is built on a clear separation of concerns, ensuring m
 - **[TDD Pattern (Test each and individual componets of system and ensure that they work as expected)](https://abc.com)**
 
 
+## Installaction Guideline
+
+
+Run Permission command if file is not writable or appendable, if cache and boostrap file are not creating in folder when bootstrapping application
+```
+sudo chmod -R 777 ./
+or permission to specific folder
+```
+
+## Installation and Database Table For Main Application
+
+These commands will create a tables and migration for main application , where you create a tenants and other stuff, 
+
+```
+$ cp .env.example .env
+$ docker compose build (only first time or if any settings have changed)
+$ docker compose up -d
+$ docker compose exec app composer install
+$ docker compose exec app php artisan key:generate
+$ docker compose exec app php artisan migrate --seed
+docker compose exec app php artisan db:seed 
+$ docker compose exec app php artisan storage:link
+
+```
+
+
+The application should now be reachable at http://localhost:8000.
+you are free to change APP_PORT in .env .ie APP_PORT=9000 and  run docker compose up -d and then you can access app through   http://localhost:8000
+
+## Running artisan command through docker
+
+    $ docker compose exec app php artisan # you can alias `docker compose exec app php artisan` in you .bashrc or .zshrc
+
+
+## Access database
+
+- PhpmyAdmin
+
+  For adminer go to http://localhost:8080
+  For command line access:
+  $ docker compose exec db mysql -u root -p # default password is `root` or `@dmin@123`
+
+
+## Access Mail and Development time mail sandbox
+
+During development and UAT testing you may need a random email for testing for sending email of order notification, order delivery email notification as per application need, please use folling port for mailbox sandbox
+
+- Maildev
+Please go to this link for mail check  http://localhost:8002
+
+
+
+## Running the tests
+
+- Run unit and feature test
+
+```
+docker compose exec app ./vendor/bin/phpunit 
+Or
+docker compose exec app php artisan test
+
+```
+
+
+
+
+

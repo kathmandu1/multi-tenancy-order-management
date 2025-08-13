@@ -8,6 +8,7 @@ use Modules\CentralApplication\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Modules\CentralApplication\Http\Requests\TenantStoreRequest;
 use Modules\CentralApplication\Transformers\TenantResource;
 
 class TenantController extends Controller
@@ -69,7 +70,7 @@ class TenantController extends Controller
      *     )
      * )
      */
-    public function store(Request $request)
+    public function store(TenantStoreRequest $request)
     {
         try {
             $tenant =  Tenant::create([
@@ -162,7 +163,7 @@ class TenantController extends Controller
      *     )
      * )
      */
-    public function update(Request $request, $id)
+    public function update(TenantStoreRequest $request, $id)
     {
         $tenant = Tenant::findOrFail($id);
         try {
