@@ -87,6 +87,16 @@ docker compose exec app php artisan test
 
 ```
 
+## Tenancy Migration and Seeder Setup
+We have make a seeder, factory for tenant for testing and TDD development, use can use following command
+
+```
+    php artisan tenants:list  // get list of tenant
+    php artisan tenants:migrate // migration if  any new migration file is added in tenant folder of migration
+    php artisan tenants:migrate-fresh // drop all table and re-run migration
+    php artisan tenants:seed
+```
+
 ## Tenancy and Tenancy management
 We are using the Laravel Tenancy package for tenant management [laravel Tenancy (https://tenancyforlaravel.com/)], with separate databases for each tenant.
 
