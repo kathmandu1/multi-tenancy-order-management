@@ -72,7 +72,7 @@
 - Integration with external pricing engines for dynamic price adjustments.
 - Currency and region-based pricing for international markets.
 
----
+
 
 ## 4. Use of AI Tools
 
@@ -108,6 +108,12 @@
 5. **Enhance security** with role-based access control per tenant.
 
 ---
+
+## 5. Branching Strategy and Tools for controll commit message and branch name (GrumPhp)
+- Our branch name should followed by Feature/.. hotfix/... , please read file grumphp.yml in root of project
+- commit message should followed by Feature #01... messae, Fixes....#cardNo comit message
+- eg Fixes #01 fix on order api of order not creating
+- Check code quality
 
 **Author**: Santosh Ghimire  
 **Date**: 2025-08-14  
