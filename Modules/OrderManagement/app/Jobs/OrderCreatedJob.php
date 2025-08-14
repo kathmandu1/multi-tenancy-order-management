@@ -29,7 +29,6 @@ class OrderCreatedJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // dd($this->order->customer);
         try {
             Mail::to($this->order->customer->email)
                 ->send(new OrderCreatedMail($this->order));

@@ -148,7 +148,7 @@ class CustomerController extends Controller
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return  $this->successResponse(new CustomerResource($data), 'Customer Data store successfully', 201);
+        return  $this->successResponse(new CustomerResource($data), 'Customer data store successfully', 201);
     }
 
     /**
