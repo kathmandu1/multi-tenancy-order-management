@@ -24,8 +24,6 @@ class CustomerRepository extends BaseRepository implements Customerable
         $query = app(Pipeline::class)
             ->send($this->model->newQuery())
             ->through([
-                // ClientFilter::class,
-                // Add more filters here if needed
             ])
             ->thenReturn();
 
