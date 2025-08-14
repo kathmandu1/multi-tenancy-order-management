@@ -6,6 +6,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Modules\OrderManagement\Events\OrderCreatedEvent;
+use Modules\OrderManagement\Jobs\OrderCreatedJob;
 
 class OrderCreatedListener
 {
@@ -27,5 +28,8 @@ class OrderCreatedListener
         // ]);
 
       // send notifcation activity to job and queue
+        OrderCreatedJob::dispatch($orderCreatedEvent->order);
+
+
     }
 }

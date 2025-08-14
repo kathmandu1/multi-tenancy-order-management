@@ -30,7 +30,7 @@ class OrderResource extends JsonResource
      *  type="string",
      *  format="date-time",
      *  description="The expected delivery date of the order.",
-     *  example="2023-01-01T12:00:00Z"
+     *  example="2023-01-01 12:00:00"
      * ),
      * @OA\Property(
      *  property="total_order_amount",

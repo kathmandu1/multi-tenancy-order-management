@@ -26,7 +26,7 @@ class ProductController extends Controller
      *     summary="Get products list",
      *     description="Returns a list of products. Supports enabling or disabling pagination.",
      *     operationId="getProducts",
-     *     tags={"Tenants", "Products"},
+     *     tags={"Products"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
@@ -145,8 +145,14 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $data =  $this->productService->findById($id);
-        return ProductResource::make($data);
+        try{
+            $data =  $this->productService->findById($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->errorResponse('Something went wrong', 500);
+        }
+
+        return $this->successResponse(new ProductResource($data), 'Product retrieved successfully');
     }
 
     /**

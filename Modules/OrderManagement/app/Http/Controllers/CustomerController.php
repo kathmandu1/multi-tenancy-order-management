@@ -27,7 +27,7 @@ class CustomerController extends Controller
      *     summary="Get customers list",
      *     description="Returns a list of customers. Supports enabling or disabling pagination.",
      *     operationId="getCustomers",
-     *     tags={"Tenants", "Customers"},
+     *     tags={"Customers"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
@@ -148,7 +148,7 @@ class CustomerController extends Controller
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return  $this->successResponse(new CustomerResource($data), 'Customer Data store successfully', 201);
+        return  $this->successResponse(new CustomerResource($data), 'Customer data store successfully', 201);
     }
 
     /**
