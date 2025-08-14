@@ -239,9 +239,12 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        // @todo Implement the show method with proper response
-
-        $data =  $this->orderService->findById($id);
+        try {
+            $data =  $this->orderService->findById($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return  $this->errorResponse('Something went wrong', 500);
+        }
         return OrderResource::make($data);
     }
 
@@ -320,7 +323,6 @@ class OrderController extends Controller
         try {
             $updatedOrder = $this->orderService->updateOrderItems($request->order_items, $orderID);
         } catch (Exception $e) {
-            dd($e);
             Log::error($e->getMessage());
             return $this->errorResponse('Something went wrong', 500);
         }

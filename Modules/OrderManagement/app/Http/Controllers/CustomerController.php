@@ -27,7 +27,7 @@ class CustomerController extends Controller
      *     summary="Get customers list",
      *     description="Returns a list of customers. Supports enabling or disabling pagination.",
      *     operationId="getCustomers",
-     *     tags={"Tenants", "Customers"},
+     *     tags={"Customers"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",
