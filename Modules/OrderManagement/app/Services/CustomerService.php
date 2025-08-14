@@ -50,7 +50,6 @@ class CustomerService
 
             $modelData = $this->customerable->create($data);
         } catch (Exception $exception) {
-            dd($exception);
             DB::rollback();
             throw new Exception($exception);
         }

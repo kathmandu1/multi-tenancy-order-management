@@ -25,8 +25,6 @@ class ProductRepository extends BaseRepository implements Productable
         $query = app(Pipeline::class)
             ->send($this->model->newQuery())
             ->through([
-                // ClientFilter::class,
-                // Add more filters here if needed
             ])
             ->thenReturn();
 

@@ -53,12 +53,8 @@ class CustomerShippingService
                 'status' => $customerShippingDTO->status
             ];
 
-
-
-
             $modelData = $this->shippable->create($data);
         } catch (Exception $exception) {
-            dd($exception);
             DB::rollback();
             throw new Exception($exception);
         }

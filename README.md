@@ -87,6 +87,18 @@ docker compose exec app php artisan test
 
 ```
 
+## Test code Quality and Coding Standard
+
+- For more details and  usecases read docs https://github.com/phpro/grumphp
+
+```
+docker compose exec app vendor/bin/grumphp run
+
+```
+
+
+
+
 ## Tenancy Migration and Seeder Setup
 We have make a seeder, factory for tenant for testing and TDD development, use can use following command
 
