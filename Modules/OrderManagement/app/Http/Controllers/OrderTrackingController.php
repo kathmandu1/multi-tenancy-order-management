@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Log;
 use Modules\CentralApplication\Traits\ApiResponse;
 use Modules\OrderManagement\DataBuilder\OrderTrackingDataBuilder;
 use Modules\OrderManagement\Events\OrderCreatedEvent;
+use Modules\OrderManagement\Events\OrderTrakingStatusCreate;
+use Modules\OrderManagement\Exceptions\InvalidOrderTrackingStatusException;
 use Modules\OrderManagement\Http\Requests\OrderTrackingRequest;
 use Modules\OrderManagement\Services\Order\OrderTrackingService;
 use Modules\OrderManagement\Transformers\OrderResource;
+use Modules\OrderManagement\Transformers\OrderTrackingResource;
 
 class OrderTrackingController extends Controller
 {
@@ -47,25 +50,18 @@ class OrderTrackingController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Order Tracking Data",
+     *         description="List of orders",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="product_name", type="string", example="Apple pro max"),
-     *                     @OA\Property(property="meta_title", type="string", example="Ios"),
-     *                     @OA\Property(property="meta_description", type="string", example="smartphone, cellphone"),
-     *                     @OA\Property(property="status", type="string", example="true"),
-     *                     @OA\Property(property="remarks", type="string", example="product sample")
-     *                 )
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="tracking information retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/orderTrackingResourceSchema")
      *             ),
-     *             @OA\Property(property="meta", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *             @OA\Property(
+     *                 property="meta",
+     *                 ref="#/components/schemas/PaginationSchema"
      *             )
      *         )
      *     )
@@ -79,12 +75,11 @@ class OrderTrackingController extends Controller
             $eagerLoadWithRelationData = [];
             $data = $this->orderTrackingService->getAll($request, $eagerLoadWithRelationData);
         } catch (Exception $e) {
-            // dd($e);
-            Log::error($e->getmessage());
+            Log::error($e->getMessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return $this->successResponse(OrderResource::collection($data), 'Order tracking information retrieved successfully');
+        return $this->successResponse(OrderTrackingResource::collection($data), 'Order tracking information retrieved successfully');
     }
 
 
@@ -119,6 +114,7 @@ class OrderTrackingController extends Controller
      *             @OA\Property(
      *                 property="order_status",
      *                 type="string",
+     *                 enum={"pending", "processing", "shipped", "delivered", "cancelled"},
      *                 example="shipped"
      *             ),
      *             @OA\Property(
@@ -130,11 +126,16 @@ class OrderTrackingController extends Controller
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Order Tracking created successfully"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input"
+     *         description="Order Taking created successfully",
+     *        @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Order Taking created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                  type="object",
+     *                 ref="#/components/schemas/orderTrackingResourceSchema"
+     *             ),
+     *         )
      *     ),
      *     @OA\Parameter(
      *         name="X-Tenant",
@@ -151,15 +152,17 @@ class OrderTrackingController extends Controller
     {
         try {
             $createDataDTO = OrderTrackingDataBuilder::getDtoData($request);
-            $order =  $this->orderTrackingService->store($createDataDTO);
-            // event(new OrderCreatedEvent($order));
+            $orderTracking =  $this->orderTrackingService->store($createDataDTO);
+            event(new OrderTrakingStatusCreate($orderTracking));
+        } catch (InvalidOrderTrackingStatusException $invalidOrderTrackingStatusException) {
+            Log::error($invalidOrderTrackingStatusException->getMessage());
+            return $this->errorResponse($invalidOrderTrackingStatusException->getMessage(), 400);
         } catch (Exception $e) {
-            dd($e->getMessage());
             Log::error($e->getMessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
 
-        return  $this->successResponse(new OrderResource($order), 'Order tracking information store successfully', 201);
+        return  $this->successResponse(new OrderTrackingResource($orderTracking), 'Order tracking information store successfully', 201);
     }
 
     /**
@@ -167,8 +170,13 @@ class OrderTrackingController extends Controller
      */
     public function show($id)
     {
-        $data =  $this->orderTrackingService->findById($id);
-        return OrderResource::make($data);
+        try {
+            $data =  $this->orderTrackingService->findById($id);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return  $this->errorResponse('Something went wrong', 500);
+        }
+        return OrderTrackingResource::make($data);
     }
 
 
@@ -180,11 +188,11 @@ class OrderTrackingController extends Controller
 
         try {
             $createDataDTO = OrderTrackingDataBuilder::getDtoData($request);
-            $data =  $this->orderTrackingService->update($createDataDTO, $id);
+            // $data =  $this->orderTrackingService->update($createDataDTO, $id);
         } catch (Exception $e) {
             Log::error($e->getmessage());
             return  $this->errorResponse('Something went wrong', 500);
         }
-        return  $this->successResponse($data, 'Order tracking information update successfully', 201);
+        // return  $this->successResponse($data, 'Order tracking information update successfully', 201);
     }
 }

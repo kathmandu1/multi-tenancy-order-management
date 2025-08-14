@@ -4,7 +4,9 @@ namespace Modules\OrderManagement\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\OrderManagement\Events\OrderCreatedEvent;
+use Modules\OrderManagement\Events\OrderTrakingStatusCreate;
 use Modules\OrderManagement\Listeners\OrderCreatedListener;
+use Modules\OrderManagement\Listeners\OrderTrakingStatusCreateListener;
 use Modules\OrderManagement\Models\Order;
 use Modules\OrderManagement\Models\OrderProduct;
 use Modules\OrderManagement\Observers\OrderItemObserver;
@@ -20,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         OrderCreatedEvent::class => [
             OrderCreatedListener::class,
+        ],
+        OrderTrakingStatusCreate::class => [
+            OrderTrakingStatusCreateListener::class,
         ],
     ];
 

@@ -56,6 +56,6 @@ class OrderRepository extends BaseRepository implements Orderable
 
     public function getById(int $id): ?Order
     {
-        return $this->model->with(['customer', 'orderItems', 'orderTracking', 'shippingAddress'])->find($id);
+        return $this->model->with(['customer', 'orderItems', 'orderTracking', 'shippingAddress'])->findOrFail($id);
     }
 }

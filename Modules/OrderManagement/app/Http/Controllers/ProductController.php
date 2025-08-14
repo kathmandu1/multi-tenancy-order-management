@@ -26,7 +26,7 @@ class ProductController extends Controller
      *     summary="Get products list",
      *     description="Returns a list of products. Supports enabling or disabling pagination.",
      *     operationId="getProducts",
-     *     tags={"Tenants", "Products"},
+     *     tags={"Products"},
      *     @OA\Parameter(
      *         name="pagination",
      *         in="query",

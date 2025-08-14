@@ -4,6 +4,7 @@ namespace Modules\OrderManagement\Repositories\Order;
 
 use Illuminate\Pipeline\Pipeline;
 use Modules\OrderManagement\Contracts\Order\OrderTrackable;
+use Modules\OrderManagement\Enums\OrderTrackingEnum;
 use Modules\OrderManagement\Models\OrderTracking;
 use Modules\OrderManagement\Pipelines\OrderTracking\OrderFilterPipe;
 use Modules\OrderManagement\Repositories\BaseRepository;
@@ -50,5 +51,16 @@ class OrderTrackingRepository extends BaseRepository   implements OrderTrackable
     public function getById(int $id): OrderTracking
     {
         return $this->model->find($id);
+    }
+
+    public function getLatestStatusOfOrder($orderId): ?OrderTrackingEnum
+    {
+        $latestTracking = $this->model->where('order_id', $orderId)->latest('created_at')->first();
+
+
+        if (!$latestTracking) {
+            return null;
+        }
+        return OrderTrackingEnum::from($latestTracking->order_status);
     }
 }
