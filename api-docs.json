@@ -1,0 +1,2337 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Integration Swagger in Laravel with Tenant Api Documentation For Multitenancy Laravel app",
+        "description": "Implementation of Swagger with in Multi tenancy App",
+        "contact": {
+            "email": "santoshghimire1122233@gmail.com"
+        },
+        "license": {
+            "name": "Tenancy 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": " API Server"
+        }
+    ],
+    "paths": {
+        "/api/tenants": {
+            "get": {
+                "tags": [
+                    "Main Application"
+                ],
+                "summary": "Get a list of tenants",
+                "description": "Retrieves a list of all tenants from the database",
+                "operationId": "49e1dc4a52583de2b4f7280cf6674ac9",
+                "responses": {
+                    "200": {
+                        "description": "A list of tenants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tenants retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/tenantResourceSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Main Application"
+                ],
+                "summary": "Create a new tenant",
+                "description": "Stores a new user in the database",
+                "operationId": "98c83db09125de8a6c99005bda0c9fce",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tenant_name",
+                                    "email",
+                                    "domain"
+                                ],
+                                "properties": {
+                                    "tenant_name": {
+                                        "type": "string",
+                                        "example": "alibaba"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "alibaba@gmail.com"
+                                    },
+                                    "domain": {
+                                        "type": "string",
+                                        "example": "alibaba.localhost"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tenant created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "tenant created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/tenantResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/tenants/{id}": {
+            "get": {
+                "tags": [
+                    "Main Application"
+                ],
+                "summary": "Get a single tenant",
+                "description": "Retrieves a single tenant by ID",
+                "operationId": "e530ed1ea97913c77e0b8ea0318b6e08",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tenant retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tenant retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/tenantResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tenant not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tenant not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Main Application"
+                ],
+                "summary": "Delete an tenant",
+                "description": "Deletes an item by ID",
+                "operationId": "deleteItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of item to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tenant deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tenant deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Item not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Main Application"
+                ],
+                "summary": "Update an existing tenant",
+                "description": "Updates an existing tenant in the database",
+                "operationId": "78da2f64c2907a8f8fdde6987530e71f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "tenant_name",
+                                    "email",
+                                    "domain"
+                                ],
+                                "properties": {
+                                    "tenant_name": {
+                                        "type": "string",
+                                        "example": "updated_tenant"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "updated_tenant@gmail.com"
+                                    },
+                                    "domain": {
+                                        "type": "string",
+                                        "example": "updated_tenant.localhost"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tenant updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "tenant updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/customers": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get customers list",
+                "description": "Returns a list of customers. Supports enabling or disabling pagination.",
+                "operationId": "getCustomers",
+                "parameters": [
+                    {
+                        "name": "pagination",
+                        "in": "query",
+                        "description": "Enable or disable pagination (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of customers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CustomerResourceSchema"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new customer",
+                "description": "Stores customer information in the system",
+                "operationId": "storeCustomer",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/customerCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Customer created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CustomerResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/customers/{id}": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get customer by ID",
+                "description": "Returns a single customer by their ID",
+                "operationId": "getCustomerById",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CustomerResourceSchema"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete customer by ID",
+                "description": "Deletes a single customer by their ID",
+                "operationId": "deleteCustomerById",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Customer deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Update an existing customer",
+                "description": "Updates customer information in the system",
+                "operationId": "updateCustomer",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/customerCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "List of customers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer update successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/customers/{id}/shippingaddresses": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get customer's shipping addresses",
+                "description": "Returns a list of shipping addresses for a specific customer.",
+                "operationId": "getCustomerShippingAddresses",
+                "parameters": [
+                    {
+                        "name": "pagination",
+                        "in": "query",
+                        "description": "Enable or disable pagination (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of customers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 Main St"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "+977-9800000000"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "john@example.com"
+                                                    },
+                                                    "price_type": {
+                                                        "type": "string",
+                                                        "example": "retail"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Create a new customer shipping address",
+                "description": "Stores customer shipping address information in the system",
+                "operationId": "storeCustomerShippingAddress",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "recipient_name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main St, City"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+977-9800000000"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Kathmandu"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "Bagmati"
+                                    },
+                                    "postal_code": {
+                                        "type": "string",
+                                        "example": "44600"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "Nepal"
+                                    },
+                                    "longitude": {
+                                        "type": "string",
+                                        "example": "85.324"
+                                    },
+                                    "latitude": {
+                                        "type": "string",
+                                        "example": "27.7172"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Customer created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Shipping created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "recipient_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St, City"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+977-9800000000"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "Kathmandu"
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "example": "Bagmati"
+                                                },
+                                                "postal_code": {
+                                                    "type": "string",
+                                                    "example": "44600"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "Nepal"
+                                                },
+                                                "longitude": {
+                                                    "type": "string",
+                                                    "example": "85.324"
+                                                },
+                                                "latitude": {
+                                                    "type": "string",
+                                                    "example": "27.7172"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "active"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get orders list, use parameter for filtering such as filter by customer, delivery date and deliver and pending orders",
+                "description": "Returns a list of orders. Supports enabling or disabling pagination.",
+                "operationId": "getOrders",
+                "parameters": [
+                    {
+                        "name": "pagination",
+                        "in": "query",
+                        "description": "Enable or disable pagination (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "delivery_date_from",
+                        "in": "query",
+                        "description": "Filter orders by delivery date from (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2023-01-01"
+                        }
+                    },
+                    {
+                        "name": "delivery_date_to",
+                        "in": "query",
+                        "description": "Filter orders by delivery date to (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2023-01-01"
+                        }
+                    },
+                    {
+                        "name": "customer_id",
+                        "in": "query",
+                        "description": "Filter orders by customer ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter orders by status, 0 for pending, 1 for completed",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "shipping_address",
+                        "in": "query",
+                        "description": "Shipping address for the order, it will return all order matching to shipping address",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "kathmandu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order data retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/orderResourceSchema"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Create a new customer order",
+                "description": "Create a new order for a customer inside a tenant.",
+                "operationId": "70d9351b3d1c4cf5ab226fc7b3089ed0",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Tenant identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/customerOrderSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/orderResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order details",
+                "description": "Returns the details of a specific order.",
+                "operationId": "getOrder",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The unique identifier of the order.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details of the order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order retrieved successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/orderResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/{order}/orderitems": {
+            "patch": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Update items of an existing order, remove and add item from order until order is confirm",
+                "description": "Add, remove, or update quantities of items in an order.",
+                "operationId": "7d05bb6ffc9012e7748aeb7782bcc2bb",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Tenant identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order items updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order items updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/orderResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        },
+        "/api/orders/{id}/trackings": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order tracking information information regarding when order is processed, when order is delivered",
+                "description": "Returns tracking information for a specific order.",
+                "operationId": "getOrderTracking",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "tracking information retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/orderTrackingResourceSchema"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tenants",
+                    "Orders"
+                ],
+                "summary": "Create a new tracking entry for an order",
+                "description": "Creates a new tracking entry for a specific order .",
+                "operationId": "4e28745f88513881ca932d8c9b7851ab",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Tenant identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_action_by": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-08-10 10:00:00"
+                                    },
+                                    "order_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "pending",
+                                            "processing",
+                                            "shipped",
+                                            "delivered",
+                                            "cancelled"
+                                        ],
+                                        "example": "shipped"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Order has been shipped"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order Taking created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order Taking created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/orderTrackingResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get products list",
+                "description": "Returns a list of products. Supports enabling or disabling pagination.",
+                "operationId": "getProducts",
+                "parameters": [
+                    {
+                        "name": "pagination",
+                        "in": "query",
+                        "description": "Enable or disable pagination (true or false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Products retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ProductResourceSchema"
+                                            }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/components/schemas/PaginationSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create a new product",
+                "description": "Stores product information in the system",
+                "operationId": "storeProduct",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/productCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ProductResourceSchema"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}": {
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete product by ID",
+                "description": "Deletes a single product by their ID",
+                "operationId": "deleteProductById",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update an existing product",
+                "description": "Updates product information in the system",
+                "operationId": "updateProduct",
+                "parameters": [
+                    {
+                        "name": "X-Tenant",
+                        "in": "header",
+                        "description": "Id of Tenant",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "71662abc-5751-4bcc-a61f-24a4ec7ef698"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of Customer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/productCreateSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "List of products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product update successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PaginationSchema": {
+                "title": "Pagination Schema",
+                "description": "A schema for paginated responses.",
+                "properties": {
+                    "current_page": {
+                        "description": "The current page number.",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 1
+                    },
+                    "last_page": {
+                        "description": "The last page number.",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 10
+                    },
+                    "per_page": {
+                        "description": "The number of items per page.",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 10
+                    },
+                    "total": {
+                        "description": "The total number of items.",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 100
+                    }
+                },
+                "type": "object"
+            },
+            "tenantResourceSchema": {
+                "title": "Tenant Resource Schema",
+                "description": "A schema for a single instance of a tenant resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the resource.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "tenant_name": {
+                        "description": "The name of the tenant.",
+                        "type": "string",
+                        "example": "alibaba"
+                    },
+                    "email": {
+                        "description": "The email address of the tenant.",
+                        "type": "string",
+                        "format": "email",
+                        "example": "alibaba@gmail.com"
+                    },
+                    "phone": {
+                        "description": "The phone number of the tenant.",
+                        "type": "string",
+                        "example": "123-456-7890"
+                    },
+                    "domains": {
+                        "description": "The domains associated with the tenant.",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": "alibaba.localhost"
+                    }
+                },
+                "type": "object"
+            },
+            "customerCreateSchema": {
+                "title": "Customer Create Schema",
+                "description": "A schema for creating a new customer.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Ali Baba"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "123 Main St, City",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+977-9800000000",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "alibaba@example.com",
+                        "nullable": true
+                    },
+                    "price_type": {
+                        "type": "string",
+                        "example": "b2b price",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "customerOrderSchema": {
+                "title": "Customer Order Schema",
+                "description": "A schema for creating a new customer order.",
+                "properties": {
+                    "customer_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "order_code": {
+                        "type": "string",
+                        "example": "ORD-12345"
+                    },
+                    "order_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-01"
+                    },
+                    "delivery_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2023-01-05"
+                    },
+                    "shipping_address_id": {
+                        "description": "The ID of the shipping address of cutomer, you must ensure it belongs to the customer.",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "total_order_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    },
+                    "total_discount_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10
+                    },
+                    "actual_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 90
+                    },
+                    "status": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "remark": {
+                        "type": "string",
+                        "example": "Please deliver between 9 AM and 5 PM"
+                    },
+                    "order_items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/orderItemSchema"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "orderItemSchema": {
+                "title": "Order Item Schema",
+                "description": "A schema for creating a new order item.",
+                "properties": {
+                    "product_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "productCreateSchema": {
+                "title": "Product Create Schema",
+                "description": "A schema for creating a new product.",
+                "properties": {
+                    "product_name": {
+                        "type": "string",
+                        "example": "i phoneBaba"
+                    },
+                    "meta_title": {
+                        "type": "string",
+                        "example": "product",
+                        "nullable": true
+                    },
+                    "meta_description": {
+                        "type": "string",
+                        "example": "This is a sample product",
+                        "nullable": true
+                    },
+                    "meta_keywords": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "product, stock",
+                        "nullable": true
+                    },
+                    "base_price": {
+                        "type": "string",
+                        "example": "1500",
+                        "nullable": true
+                    },
+                    "b2b_price": {
+                        "type": "string",
+                        "example": "1600",
+                        "nullable": true
+                    },
+                    "b2c_price": {
+                        "type": "string",
+                        "example": "2000",
+                        "nullable": true
+                    },
+                    "batch_no": {
+                        "type": "string",
+                        "example": "batch-001",
+                        "nullable": true
+                    },
+                    "lot_no": {
+                        "type": "string",
+                        "example": "lot-001",
+                        "nullable": true
+                    },
+                    "available_stock": {
+                        "type": "integer",
+                        "example": 100,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CustomerResourceSchema": {
+                "title": "Customer Resource Schema",
+                "description": "A schema for a single instance of a customer resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the resource.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "The name of the customer.",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "The email address of the customer.",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "phone": {
+                        "description": "The phone number of the customer.",
+                        "type": "string",
+                        "example": "123-456-7890"
+                    },
+                    "created_at": {
+                        "description": "The creation date and time of the resource.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The last update date and time of the resource.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "price_type": {
+                        "description": "The pricing type of the customer.",
+                        "type": "string",
+                        "example": "b2b price"
+                    },
+                    "shippings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CustomerShippingAddressResourceSchema"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CustomerShippingAddressResourceSchema": {
+                "title": "Customer Shipping Address Resource Schema",
+                "description": "A schema for a single instance of a customer shipping address resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the resource.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/CustomerResourceSchema"
+                    },
+                    "recipient_name": {
+                        "description": "The name of the recipient.",
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "phone": {
+                        "description": "The phone number of the recipient.",
+                        "type": "string",
+                        "example": "123-456-7890"
+                    },
+                    "address": {
+                        "description": "The address of the recipient.",
+                        "type": "string",
+                        "example": "123 Main St"
+                    },
+                    "city": {
+                        "description": "The city of the recipient.",
+                        "type": "string",
+                        "example": "Anytown"
+                    },
+                    "state": {
+                        "description": "The state of the recipient.",
+                        "type": "string",
+                        "example": "CA"
+                    },
+                    "postal_code": {
+                        "description": "The postal code of the recipient.",
+                        "type": "string",
+                        "example": "12345"
+                    },
+                    "country": {
+                        "description": "The country of the recipient.",
+                        "type": "string",
+                        "example": "USA"
+                    },
+                    "longitude": {
+                        "description": "The longitude coordinate of the delivery location.",
+                        "type": "string",
+                        "example": "-123.456"
+                    },
+                    "latitude": {
+                        "description": "The latitude coordinate of the delivery location.",
+                        "type": "string",
+                        "example": "37.7749"
+                    },
+                    "status": {
+                        "description": "The status of the shipping address.",
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "orderItemsResourceSchema": {
+                "title": "Order Item Resource Schema",
+                "description": "A schema for a single instance of an order item resource.",
+                "properties": {
+                    "order_id": {
+                        "description": "The ID of the associated order.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "description": "The ID of the associated product.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "quantity": {
+                        "description": "The quantity of the product ordered.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 2
+                    },
+                    "price": {
+                        "description": "The price of the product.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 100
+                    },
+                    "subtotal": {
+                        "description": "The subtotal for the item (quantity * price).",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 200
+                    },
+                    "status": {
+                        "description": "The status of the order item.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 200
+                    }
+                },
+                "type": "object"
+            },
+            "orderResourceSchema": {
+                "title": "Order Item Resource Schema",
+                "description": "A schema for a single instance of an order item resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the order item.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "order_code": {
+                        "description": "The unique code of the order.",
+                        "type": "string",
+                        "example": "ORD123456"
+                    },
+                    "delivery_date": {
+                        "description": "The expected delivery date of the order.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01 12:00:00"
+                    },
+                    "total_order_amount": {
+                        "description": "The total amount of the order.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1000
+                    },
+                    "total_discount_amount": {
+                        "description": "The total discount amount applied to the order.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 100
+                    },
+                    "actual_amount": {
+                        "description": "The actual amount to be paid for the order.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 200
+                    },
+                    "status": {
+                        "description": "The current status of the order.",
+                        "type": "string",
+                        "example": "pending"
+                    },
+                    "remark": {
+                        "description": "Any additional remarks about the order.",
+                        "type": "string",
+                        "example": "Please deliver between 5 PM and 7 PM."
+                    },
+                    "customer": {
+                        "$ref": "#/components/schemas/CustomerResourceSchema"
+                    },
+                    "shipping_address": {
+                        "$ref": "#/components/schemas/CustomerShippingAddressResourceSchema"
+                    },
+                    "order_items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/orderItemsResourceSchema"
+                        }
+                    },
+                    "order_tracking": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/orderTrackingResourceSchema"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "orderTrackingResourceSchema": {
+                "title": "Order Tracking Resource Schema",
+                "description": "A schema for a single instance of an order tracking resource.",
+                "properties": {
+                    "order_id": {
+                        "description": "The ID of the associated order.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "order_action_by": {
+                        "description": "The user who performed the action.",
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "date": {
+                        "description": "The date and time when the action was performed.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T12:00:00Z"
+                    },
+                    "order_status": {
+                        "description": "The current status of the order.",
+                        "type": "string",
+                        "example": "shipped"
+                    },
+                    "remarks": {
+                        "description": "Any additional remarks about the order action.",
+                        "type": "string",
+                        "example": "Delivered successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductResourceSchema": {
+                "title": "Product Resource Schema",
+                "description": "A schema for a single instance of a product resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the resource.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "product_name": {
+                        "description": "The name of the product.",
+                        "type": "string",
+                        "example": "Sample Product"
+                    },
+                    "meta_title": {
+                        "description": "The meta title of the product.",
+                        "type": "string",
+                        "example": "This is a sample product."
+                    },
+                    "meta_description": {
+                        "description": "The meta description of the product.",
+                        "type": "string",
+                        "example": "This is a sample product."
+                    },
+                    "meta_keywords": {
+                        "description": "The meta keywords of the product.",
+                        "type": "string",
+                        "example": "product, stock"
+                    },
+                    "remarks": {
+                        "description": "Any additional remarks about the product.",
+                        "type": "string",
+                        "example": "This is a sample product."
+                    },
+                    "status": {
+                        "description": "The status of the product.",
+                        "type": "string",
+                        "example": "active"
+                    },
+                    "created_at": {
+                        "description": "The creation date and time of the resource.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "The last update date and time of the resource.",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductVariantResourceSchema": {
+                "title": "Product Variant Resource Schema",
+                "description": "A schema for a single instance of a product variant resource.",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for the resource.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "product_id": {
+                        "description": "The ID of the associated product.",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "base_price": {
+                        "description": "The base price of the product variant.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 99.99
+                    },
+                    "b2b_price": {
+                        "description": "The B2B price of the product variant.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 89.99
+                    },
+                    "b2c_price": {
+                        "description": "The B2C price of the product variant.",
+                        "type": "number",
+                        "format": "float",
+                        "example": 109.99
+                    },
+                    "available_stock": {
+                        "description": "The available stock quantity of the product variant.",
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 100
+                    },
+                    "batch_no": {
+                        "description": "The batch number of the product variant.",
+                        "type": "string",
+                        "example": "BATCH123"
+                    },
+                    "lot_no": {
+                        "description": "The lot number of the product variant.",
+                        "type": "string",
+                        "example": "LOT456"
+                    },
+                    "keyword": {
+                        "description": "A keyword associated with the product variant.",
+                        "type": "string",
+                        "example": "example-keyword"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Main Application",
+            "description": "Endpoints for the main application for tenant creatation and domain"
+        },
+        {
+            "name": "Tenants",
+            "description": "Endpoints related to tenants inside the main application regarding Order,Product and shipping"
+        },
+        {
+            "name": "Customers",
+            "description": "Customers"
+        },
+        {
+            "name": "Orders",
+            "description": "Orders"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        }
+    ]
+}

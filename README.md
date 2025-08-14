@@ -87,7 +87,44 @@ docker compose exec app php artisan test
 
 ```
 
+## Tenancy and Tenancy management
+We are using the Laravel Tenancy package for tenant management [laravel Tenancy (https://tenancyforlaravel.com/)], with separate databases for each tenant.
+
+```
+    POST /api/tenants   \\create tenant
+    GET /api/tenant  \\ check list of tenant
+```
+
+For more details, see the Swagger documentation of the main application.
+
+After creating a tenant:
+
+- A new database for that tenant will be automatically created.
+- All required migrations will be executed in the tenant’s database by the application.
 
 
+## Swagger and OpenAPI swagger Anotation
+We have use a laravel swagger package  [laravel swagger package (https://github.com/DarkaOnLine/L5-Swagger?tab=readme-ov-file)], see documentation for more detail, you can create swagger by following comand
 
+```
+php artisan l5-swagger:generate  
+
+// you can change swagger endpoint from .env
+L5_SWAGGER_CONST_HOST=http://localhost:8000
+
+```
+
+Please check swagger documentation   http://localhost:8000/api/documentation
+
+If You want to get seperate OpenAPI json file , please use api-docs.json file from root of this project
+
+for APi structure please study schema for each api endpoint
+
+
+## Modules and Module Management
+We have use  Laravel laravel nwidart-module package for Module management [laravel module (https://nwidart.com/laravel-modules/v6/introduction)], for  more usage please  visit  this link
+
+```
+    php artisan module:make-module OrdermanagementTest
+```
 
